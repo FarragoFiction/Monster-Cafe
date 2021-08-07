@@ -10,9 +10,9 @@ WHAT WE NEED HERE:
     -can have different states for different animations
 */
 
-import Ease from './easing';
+//import Ease from './easing.js';
 
-class GraphicsController {
+export class GraphicsController {
     constructor(canvas, entities = []) {
         this.canvas = canvas;
         this.entities = entities;
@@ -38,7 +38,7 @@ class GraphicsController {
             return entities;
         }
 
-        const middle = Math.floor(entites.length / 2);
+        const middle = Math.floor(entities.length / 2);
 
         const left = entities.slice(0, middle);
         const right = entities.slice(middle);
@@ -64,26 +64,42 @@ class GraphicsController {
         return ret.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
     }
 
+    //does the update shit for every entity
+    update(time) {
+        this.entities = this.sortEntities();
+        for(var i = 0; i < this.entities.length; i++) {
+            var ent = this.entities[i];
+            ent.update(time);
+        }
+    }
 
+    render() {
+        //this.ctx.clearRect(0, 0, this.width, this.height);
+        for(var i = 0; i < this.entities.length; i++) {
+            var ent = this.entities[i];
+            this.drawSprite(ent.img, ent.x, ent.y);
+        }
+    }
 }
 
-class GraphicsEntity {
-    constructor(animations, x, y) {
+export class GraphicsEntity {
+    constructor(animations, x, y, layer = 0) {
         this.x = x;
         this.y = y;
         this.animations = animations;
         this.animState = 0;
         this.img = animations[0].frames[0].img;
         this.elapsed = 0;
+        this.layer = layer;
     }
 
     update(time) {
         this.elapsed += time;
-        this.img = animations[this.animState].getFrame(this.elapsed);
+        this.img = this.animations[this.animState].getFrame(this.elapsed);
     }
 }
 
-class SpriteAnimation {
+export class SpriteAnimation {
     constructor(frames) {
         this.frames = frames;
         this.duration = 0;
@@ -105,9 +121,15 @@ class SpriteAnimation {
     } 
 }
 
-class SpriteFrame {
+export class SpriteFrame {
     constructor(img, t) {
         this.img = img; //the base image for this frame
         this.t = t; //how long this frame should last in MS.
     }
 }
+
+/*TODO
+    RUN A TEST. HOOK THIS UP TO SAMPLE GRAPHICS
+    MAKE A SYSTEM FOR RECORDING & PARSING FRAME DATA
+    ASSET LOADING
+*/
