@@ -1,41 +1,48 @@
 import { GraphicsController, GraphicsEntity, SpriteAnimation, SpriteFrame } from './graphics/graphics.js';
+import { StartMenuController } from './startMenuController.js';
 
 const GAME_STATES = {
     MainMenu: 'MainMenu',
     Dialogue: 'Dialogue'
 };
 
-const IMAGE_SOURCES = {
-    background: '../art/background.png',
-    friend: '../art/friend.png',
-    friend2: '../art/friend2.png'
-};
-
-var gameState = GAME_STATES.Dialogue;
+var gameState = GAME_STATES.MainMenu;
 const MS_PER_UPDATE = 16.6666666;
+
 
 var graphicsController;
 
 var canvas = document.getElementById('canvas');
 
+var startMenuController = new StartMenuController(canvas);
+
 var lastTime = new Date().getTime();
 var lag = 0.0;
 
+var sources = {};
+var entities = {};
+var gEntities = {};
+
 function init(images) {
-    //todo clear all this its debug shit
-    var fFrame = new SpriteFrame(images['friend'], 1000);
-    var fFrame2 = new SpriteFrame(images['friend2'], 500);
-    var fAnim = new SpriteAnimation([fFrame, fFrame2]);
-    var fEnt = new GraphicsEntity([fAnim], 0.5, 0.5, 1);
 
-    var bFrame = new SpriteFrame(images['background'], 1000);
-    var bAnim = new SpriteAnimation([bFrame]);
-    var bEnt = new GraphicsEntity([bAnim], 0, 0, 0);
+    for (var ent in entities) {
+        var gAnis = {};
+        for (var ani in entities[ent].animations) {
+            var gFrames = [];
+            for (var frame in entities[ent].animations[ani]) {
+                var gFrame = new SpriteFrame(images[entities[ent].animations[ani][frame].src], entities[ent].animations[ani][frame].t);
+                gFrames.push(gFrame);
+            }
+            var gAni = new SpriteAnimation(gFrames);
+            gAnis[ani] = gAni;
+        }
 
-    var entities = [fEnt, bEnt];
-    graphicsController = new GraphicsController(canvas, entities);
+        var gEnt = new GraphicsEntity(gAnis, entities[ent].x, entities[ent].y, entities[ent].z);
+        gEntities[ent] = gEnt;
+    }
 
-    console.log('INITIALIZED');
+    graphicsController = new GraphicsController(canvas, gEntities);
+    startMenuController.begin();
     window.requestAnimationFrame(gameLoop);
 }
 
@@ -49,7 +56,6 @@ function gameLoop() {
     processInput();
 
     while (lag >= MS_PER_UPDATE) {
-        console.log(lag);
         update(MS_PER_UPDATE);
         lag -= MS_PER_UPDATE;
     }
@@ -66,15 +72,15 @@ function processInput() {
 
 function update(time) {
     graphicsController.update(time);
-    console.log('UPDATED');
 }
 
 function render(time) {
     graphicsController.render();
-    console.log('RENDERED');
 }
 
 function loadImages(sources, callback) {
+    const prefix = '../art/';
+    const suffix = '.png';
     var images = {};
     var loadedImages = 0;
     var numImages = 0;
@@ -86,15 +92,28 @@ function loadImages(sources, callback) {
     for (var src in sources) {
         images[src] = new Image();
         images[src].onload = function () {
-            console.log(`${loadedImages + 1}/${numImages} images loaded`);
             if (++loadedImages >= numImages) {
                 callback(images);
             }
         };
-        images[src].src = sources[src];
+        images[src].src = prefix + sources[src] + suffix;
     }
 }
 
 window.onload = function () {
-    loadImages(IMAGE_SOURCES, init);
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function () {
+        entities = JSON.parse(this.responseText);
+        for (var ent in entities) {
+            for (var ani in entities[ent].animations) {
+                for (var frame in entities[ent].animations[ani]) {
+                    sources[entities[ent].animations[ani][frame].src] = entities[ent].animations[ani][frame].src;
+                }
+            }
+        }
+        loadImages(sources, init);
+    }
+    xmlhttp.open("GET", "../data/assets.json");
+    xmlhttp.send();
+
 }

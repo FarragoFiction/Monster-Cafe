@@ -13,6 +13,10 @@ const d1 = 2.75;
 
 export class Ease {
 
+    lerp(a, b, t) {
+        return a + (b - a) * t;
+    }
+
     linear(x) {
         return x;
     }

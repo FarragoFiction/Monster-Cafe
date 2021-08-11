@@ -21,6 +21,7 @@ export class GraphicsController {
 
         this.width = canvas.width;
         this.height = canvas.height;
+        this.queue = [];
     }
 
     //draws an image on the canvas,
@@ -31,9 +32,18 @@ export class GraphicsController {
         this.ctx.drawImage(img, tX, tY);
     }
 
+    getSortedEntityList(entities = this.entities) {
+        var list = [];
+        for(var ent in entities) {
+            list.push(entities[ent]);
+        }
+        var ret = this.sortEntities(list);
+        return ret;
+    }
+
     //sorts entities by layer.
     //recursive merge sort implementation.
-    sortEntities(entities = this.entities){
+    sortEntities(entities){
         if(entities.length <= 1) {
             return entities;
         }
@@ -66,17 +76,18 @@ export class GraphicsController {
 
     //does the update shit for every entity
     update(time) {
-        this.entities = this.sortEntities();
-        for(var i = 0; i < this.entities.length; i++) {
-            var ent = this.entities[i];
+        this.queue = this.getSortedEntityList();
+        for(var i = 0; i < this.queue.length; i++) {
+            var ent = this.queue[i];
+            console.log(ent);
             ent.update(time);
         }
     }
 
     render() {
         //this.ctx.clearRect(0, 0, this.width, this.height);
-        for(var i = 0; i < this.entities.length; i++) {
-            var ent = this.entities[i];
+        for(var i = 0; i < this.queue.length; i++) {
+            var ent = this.queue[i];
             this.drawSprite(ent.img, ent.x, ent.y);
         }
     }
@@ -87,8 +98,9 @@ export class GraphicsEntity {
         this.x = x;
         this.y = y;
         this.animations = animations;
-        this.animState = 0;
-        this.img = animations[0].frames[0].img;
+        this.animState = "idle";
+        console.log(animations);
+        this.img = this.animations[this.animState].frames[0].img;
         this.elapsed = 0;
         this.layer = layer;
     }
