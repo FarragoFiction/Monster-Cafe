@@ -1,0 +1,5 @@
+graphics engine
+cleaner way to load image assets (spritesheets)?
+reading data files for characters/entities to find what assets to associate with them and all that
+successful game state switching
+menu items
