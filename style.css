@@ -1,9 +1,26 @@
 .startMenuButton {
     z-index: 3;
+}
+
+.startMenuTitle {
+    z-index: 3;
+}
+
+.startMenuHolder {
+    z-index: 3;
+    position: absolute;
+    left: 20;
+    top: 0;
+
+    text-align: center;
+}
+
+#game {
     position: relative;
 }
 
+
 #gameCanvas {
     z-index: 0;
-    position: relative;
+    position: absolute;
 }

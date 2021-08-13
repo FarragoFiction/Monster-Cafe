@@ -13,97 +13,97 @@ const d1 = 2.75;
 
 export class Ease {
 
-    lerp(a, b, t) {
+    static lerp(a, b, t) {
         return a + (b - a) * t;
     }
 
-    linear(x) {
+    static linear(x) {
         return x;
     }
 
-    inSine(x) {
+    static inSine(x) {
         return 1 - Math.cos((x * PI) / 2);
     }
 
-    outSine(x) {
+    static outSine(x) {
         return Math.sin((x * PI) / 2);
     }
 
-    inOutSine(x) {
+    static inOutSine(x) {
         return -(Math.cos(PI * x) - 1) / 2;
     }
 
-    inQuad(x) {
+    static inQuad(x) {
         return x * x;
     }
 
-    outQuad(x) {
+    static outQuad(x) {
         return 1 - (1 - x) * (1 - x);
     }
 
-    inOutQuad(x) {
+    static inOutQuad(x) {
         if (x < 0.5) {
             return 2 * x * x;
         }
         return 1 - Math.pow(-2 * x + 2, 2) / 2;
     }
 
-    inCubic(x) {
+    static inCubic(x) {
         return x * x * x;
     }
 
-    outCubic(x) {
+    static outCubic(x) {
         return 1 - Math.pow(1 - x, 3);
     }
 
-    inOutCubic(x) {
+    static inOutCubic(x) {
         if (x < 0.5) {
             return 4 * x * x * x;
         }
         return 1 - Math.pow(-2 * x + 2, 3) / 2;
     }
 
-    inQuart(x) {
+    static inQuart(x) {
         return x * x * x * x;
     }
 
-    outQuart(x) {
+    static outQuart(x) {
         return 1 - Math.pow(1 - x, 4);
     }
 
-    inOutQuart(x) {
+    static inOutQuart(x) {
         if (x < 0.5) {
             return 8 * x * x * x * x;
         }
         return 1 - Math.pow(-2 * x + 2, 4) / 2;
     }
 
-    inQuint(x) {
+    static inQuint(x) {
         return x * x * x * x * x;
     }
 
-    outQuint(x) {
+    static outQuint(x) {
         return 1 - Math.pow(1 - x, 5);
     }
 
-    inOutQuint(x) {
+    static inOutQuint(x) {
         if (x < 0.5) {
             return 16 * x * x * x * x * x;
         }
         return 1 - Math.pow(-2 * x + 2, 5) / 2;
     }
 
-    inExpo(x) {
+    static inExpo(x) {
         if (x === 0) return 0;
         return Math.pow(2, 10 * x - 10);
     }
 
-    outExpo(x) {
+    static outExpo(x) {
         if (x === 1) return 1;
         return 1 - Math.pow(2, -10 * x);
     }
 
-    inOutExpo(x) {
+    static inOutExpo(x) {
         if (x === 0) return 0;
         if (x === 1) return 1;
         if (x < 0.5) {
@@ -112,49 +112,49 @@ export class Ease {
         return (2 - Math.pow(2, -20 * x + 10)) / 2;
     }
 
-    inCirc(x) {
+    static inCirc(x) {
         return 1 - Math.sqrt(1 - x * x);
     }
 
-    outCirc(x) {
+    static outCirc(x) {
         return Math.sqrt(1 - Math.pow(x - 1, 2));
     }
 
-    inOutCirc(x) {
+    static inOutCirc(x) {
         if (x < 0.5) {
             return (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2;
         }
         return (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
     }
 
-    inBack(x) {
+    static inBack(x) {
         return c3 * x * x * x - c1 * x * x;
     }
 
-    outBack(x) {
+    static outBack(x) {
         return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
     }
 
-    inOutBack(x) {
+    static inOutBack(x) {
         if (x < 0.5) {
             return (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2;
         }
         return (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
     }
 
-    inElastic(x) {
+    static inElastic(x) {
         if (x === 0) return 0;
         if (x === 1) return 1;
         return -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4);
     }
 
-    outElastic(x) {
+    static outElastic(x) {
         if (x === 0) return 0;
         if (x === 1) return 1;
         return Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
     }
 
-    inOutElastic(x) {
+    static inOutElastic(x) {
         if (x === 0) return 0;
         if (x === 1) return 1;
         if (x < 0.5) {
@@ -163,11 +163,11 @@ export class Ease {
         return (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1;
     }
 
-    inBouce(x) {
+    static inBouce(x) {
         return 1 - outBounce(1 - x);
     }
 
-    outBounce(x) {
+    static outBounce(x) {
         if (x < 1 / d1) {
             return n1 * x * x;
         } else if (x < 2 / d1) {
@@ -179,7 +179,7 @@ export class Ease {
         }
     }
 
-    inOutBounce(x) {
+    static inOutBounce(x) {
         if (x < 0.5) {
             return (1 - outBounce(1 - 2 * x)) / 2;
         }

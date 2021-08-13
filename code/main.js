@@ -10,28 +10,26 @@ var gameState = GAME_STATES.MainMenu;
 const MS_PER_UPDATE = 16.6666666;
 
 
-var graphicsController;
+export var graphicsController;
+export var startMenuController;
 
-var canvas = document.getElementById('gameCanvas');
-var gameDiv = document.getElementById('game');
-
-var startMenuController = new StartMenuController(gameDiv);
+export var canvas = document.getElementById('gameCanvas');
+export var gameDiv = document.getElementById('game');
 
 var lastTime = new Date().getTime();
 var lag = 0.0;
 
 var sources = {};
-var entities = {};
-var gEntities = {};
+export var entities = {};
 
 function init(images) {
 
     for (var ent in entities) {
         var gAnis = {};
-        for (var ani in entities[ent].animations) {
+        for (var ani in entities[ent].graphics.animations) {
             var gFrames = [];
-            for (var frame in entities[ent].animations[ani]) {
-                var gFrame = new SpriteFrame(images[entities[ent].animations[ani][frame].src], entities[ent].animations[ani][frame].t);
+            for (var frame in entities[ent].graphics.animations[ani]) {
+                var gFrame = new SpriteFrame(images[entities[ent].graphics.animations[ani][frame].src], entities[ent].graphics.animations[ani][frame].t);
                 gFrames.push(gFrame);
             }
             var gAni = new SpriteAnimation(gFrames);
@@ -39,10 +37,12 @@ function init(images) {
         }
 
         var gEnt = new GraphicsEntity(gAnis, entities[ent].x, entities[ent].y, entities[ent].z);
-        gEntities[ent] = gEnt;
+        entities[ent].graphics = gEnt;
     }
-
-    graphicsController = new GraphicsController(canvas, gEntities);
+    
+    graphicsController = new GraphicsController(canvas);
+    startMenuController = new StartMenuController();
+    console.log('hello?');
     startMenuController.begin();
     window.requestAnimationFrame(gameLoop);
 }
@@ -106,12 +106,13 @@ window.onload = function () {
     xmlhttp.onload = function () {
         entities = JSON.parse(this.responseText);
         for (var ent in entities) {
-            for (var ani in entities[ent].animations) {
-                for (var frame in entities[ent].animations[ani]) {
-                    sources[entities[ent].animations[ani][frame].src] = entities[ent].animations[ani][frame].src;
+            for (var ani in entities[ent].graphics.animations) {
+                for (var frame in entities[ent].graphics.animations[ani]) {
+                    sources[entities[ent].graphics.animations[ani][frame].src] = entities[ent].graphics.animations[ani][frame].src;
                 }
             }
         }
+        console.log("uhh????");
         loadImages(sources, init);
     }
     xmlhttp.open("GET", "../data/assets.json");

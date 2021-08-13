@@ -1,32 +1,36 @@
 {
     "friend": {
-        "x": 0.5,
-        "y": 0.5,
-        "z": 1,
-        "animations": {
-            "idle": [
-                {
-                    "src": "friend",
-                    "t": 1000
-                },
-                {
-                    "src": "friend2",
-                    "t": 500
-                }
-            ]
+        "graphics": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 1,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "friend",
+                        "t": 1000
+                    },
+                    {
+                        "src": "friend2",
+                        "t": 500
+                    }
+                ]
+            }
         }
     },
     "background": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "animations": {
-            "idle": [
-                {
-                    "src": "background",
-                    "t": 1000
-                }
-            ]
+        "graphics": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "background",
+                        "t": 1000
+                    }
+                ]
+            }
         }
     }
 }

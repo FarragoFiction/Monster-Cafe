@@ -1,6 +1,7 @@
+import { entities, graphicsController, gameDiv} from "./main.js";
+
 export class StartMenuController {
-    constructor(target) {
-        this.target = target;
+    constructor() {
     }
 
     processInput() {
@@ -16,7 +17,7 @@ export class StartMenuController {
     }
 
     begin() {
-        this.target.append(getStartMenuDivs());
+        gameDiv.append(getStartMenuDivs());
     }
 }
 
@@ -26,7 +27,9 @@ function getStartMenuDivs() {
 
     ret.append(getStartMenuTitle("Diner Of The Damned"));
     ret.append(getStartMenuButton("Resume Game", fuck));
+    ret.append(document.createElement('br'));
     ret.append(getStartMenuButton("New Game", fuck));
+    ret.append(document.createElement('br'));
     ret.append(getStartMenuButton('Settings', fuck));
 
     return ret;
@@ -47,19 +50,7 @@ function getStartMenuTitle(text) {
     return ret;
 }
 
-/*class StartMenuTitle {
-    constructor() {
-
-    }
-
-    getElement(target) {
-        var ret = document.createElement('h1');
-        ret.className = "startMenuTitle";
-        ret.textContent = "Diner Of The Damned";
-        target.append(ret);
-    }
-}*/
-
 function fuck() {
-    console.log("fuck");
+    entities["friend"].graphics.goto(1,1,1000)
+    graphicsController.entities = [entities["friend"], entities["background"]];
 }

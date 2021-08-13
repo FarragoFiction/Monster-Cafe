@@ -10,7 +10,7 @@ WHAT WE NEED HERE:
     -can have different states for different animations
 */
 
-//import Ease from './easing.js';
+import { Ease } from './easing.js';
 
 export class GraphicsController {
     constructor(canvas, entities = []) {
@@ -26,34 +26,37 @@ export class GraphicsController {
 
     //draws an image on the canvas,
     //converting relative coordinates to the position on the canvas
-    drawSprite(img, x, y) {
+    drawSprite(img, x, y, scale = 1, r = 0) {
         const tX = x * this.width;
         const tY = y * this.height;
-        this.ctx.drawImage(img, tX, tY);
+
+        this.ctx.setTransform(scale, 0, 0, scale, tX, tY);
+        this.ctx.rotate(r);
+        this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
     }
 
     getSortedEntityList(entities = this.entities) {
         var list = [];
         for(var ent in entities) {
-            list.push(entities[ent]);
+            list.push(entities[ent].graphics);
         }
-        var ret = this.sortEntities(list);
+        var ret = this.sortEntityGraphics(list);
         return ret;
     }
 
-    //sorts entities by layer.
+    //sorts entity graphics by layer.
     //recursive merge sort implementation.
-    sortEntities(entities){
-        if(entities.length <= 1) {
-            return entities;
+    sortEntityGraphics(entityGraphics){
+        if(entityGraphics.length <= 1) {
+            return entityGraphics;
         }
 
-        const middle = Math.floor(entities.length / 2);
+        const middle = Math.floor(entityGraphics.length / 2);
 
-        const left = entities.slice(0, middle);
-        const right = entities.slice(middle);
+        const left = entityGraphics.slice(0, middle);
+        const right = entityGraphics.slice(middle);
 
-        return this.mergeHelper(this.sortEntities(left), this.sortEntities(right));
+        return this.mergeHelper(this.sortEntityGraphics(left), this.sortEntityGraphics(right));
     }
 
     mergeHelper(left, right) {
@@ -78,34 +81,84 @@ export class GraphicsController {
     update(time) {
         this.queue = this.getSortedEntityList();
         for(var i = 0; i < this.queue.length; i++) {
-            var ent = this.queue[i];
-            ent.update(time);
+            var entG = this.queue[i];
+            entG.update(time);
         }
     }
 
     render() {
-        //this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.rotate(0);
+        this.ctx.clearRect(0, 0, this.width, this.height);
         for(var i = 0; i < this.queue.length; i++) {
             var ent = this.queue[i];
-            this.drawSprite(ent.img, ent.x, ent.y);
+            this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
         }
     }
 }
 
 export class GraphicsEntity {
-    constructor(animations, x, y, layer = 0) {
+    constructor(animations, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1) {
         this.x = x;
         this.y = y;
+        this.r = r;
+        this.scale = scale;
         this.animations = animations;
         this.animState = "idle";
         this.img = this.animations[this.animState].frames[0].img;
         this.elapsed = 0;
         this.layer = layer;
+        this.changes = {};
     }
 
     update(time) {
         this.elapsed += time;
+
+        for(var change in this.changes) {
+            console.log(this.changes)
+            this[change] = this.changes[change].update(time);
+            //when the change has gone on long enough, set the value to it's final destination & remove the change.
+            if(this.changes[change].elapsed >= this.changes[change].duration) {
+                this[change] = this.changes[change].finalValue;
+                delete this.changes[change];
+            }
+        }
+
         this.img = this.animations[this.animState].getFrame(this.elapsed);
+    }
+
+    addChange(change) {
+        this.changes[change.type] = change;
+    }
+
+    goto(x, y, duration = 0, ease = Ease.linear) {
+        if(duration == 0) {
+            this.x = x;
+            this.y = y;
+        } else {
+            var cX = new Change("x", this.x, x, duration, ease);
+            var cY = new Change("y", this.y, y, duration, ease);
+            this.addChange(cX);
+            this.addChange(cY);
+        }
+    } 
+}
+
+//
+export class Change {
+    constructor(type, startValue, finalValue, duration,  ease = Ease.linear, callback = null) {
+        this.type = type;
+        this.startValue = startValue;
+        this.finalValue = finalValue;
+        this.ease = ease;
+        this.duration = duration;
+        this.callback = callback;
+        this.elapsed = 0;
+    }
+
+    update(time) {
+        this.elapsed += time;
+        return this.ease(Ease.lerp(this.startValue, this.finalValue, this.elapsed / this.duration));
     }
 }
 
