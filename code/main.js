@@ -12,9 +12,10 @@ const MS_PER_UPDATE = 16.6666666;
 
 var graphicsController;
 
-var canvas = document.getElementById('canvas');
+var canvas = document.getElementById('gameCanvas');
+var gameDiv = document.getElementById('game');
 
-var startMenuController = new StartMenuController(canvas);
+var startMenuController = new StartMenuController(gameDiv);
 
 var lastTime = new Date().getTime();
 var lag = 0.0;

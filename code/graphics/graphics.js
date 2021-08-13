@@ -79,7 +79,6 @@ export class GraphicsController {
         this.queue = this.getSortedEntityList();
         for(var i = 0; i < this.queue.length; i++) {
             var ent = this.queue[i];
-            console.log(ent);
             ent.update(time);
         }
     }
@@ -99,7 +98,6 @@ export class GraphicsEntity {
         this.y = y;
         this.animations = animations;
         this.animState = "idle";
-        console.log(animations);
         this.img = this.animations[this.animState].frames[0].img;
         this.elapsed = 0;
         this.layer = layer;
