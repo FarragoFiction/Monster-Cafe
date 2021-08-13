@@ -115,7 +115,6 @@ export class GraphicsEntity {
         this.elapsed += time;
 
         for(var change in this.changes) {
-            console.log(this.changes)
             this[change] = this.changes[change].update(time);
             //when the change has gone on long enough, set the value to it's final destination & remove the change.
             if(this.changes[change].elapsed >= this.changes[change].duration) {
@@ -131,13 +130,22 @@ export class GraphicsEntity {
         this.changes[change.type] = change;
     }
 
-    goto(x, y, duration = 0, ease = Ease.linear) {
+    makeChange(type, finalValue, duration = 0, ease = Ease.linear, callback = null) {
+        if(duration == 0) {
+            this[type] = finalValue;
+        } else {
+            var change = new Change(type, this[type], finalValue, duration, ease, callback);
+            this.addChange(change);
+        }
+    }
+
+    goto(x, y, duration = 0, ease = Ease.linear, callback = null) {
         if(duration == 0) {
             this.x = x;
             this.y = y;
         } else {
             var cX = new Change("x", this.x, x, duration, ease);
-            var cY = new Change("y", this.y, y, duration, ease);
+            var cY = new Change("y", this.y, y, duration, ease, callback); //only need to put the callback on one of them
             this.addChange(cX);
             this.addChange(cY);
         }
@@ -158,7 +166,8 @@ export class Change {
 
     update(time) {
         this.elapsed += time;
-        return this.ease(Ease.lerp(this.startValue, this.finalValue, this.elapsed / this.duration));
+        console.log(Ease.lerp(this.startValue, this.finalValue, this.ease(this.elapsed / this.duration)));
+        return Ease.lerp(this.startValue, this.finalValue, this.ease(this.elapsed / this.duration));
     }
 }
 
