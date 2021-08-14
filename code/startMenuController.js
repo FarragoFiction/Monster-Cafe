@@ -8,28 +8,34 @@ export class StartMenuController {
 
     begin() {
         gameDiv.append(getStartMenuDivs());
+        makeBackground();
     }
 }
 
+var startMenuDivs;
+
 function getStartMenuDivs() {
-    var ret = document.createElement('div');
-    ret.className = "startMenuHolder";
+    startMenuDivs = document.createElement('div');
+    startMenuDivs.className = "startMenuHolder";
 
-    ret.append(getStartMenuTitle("Diner Of The Damned"));
-    ret.append(getStartMenuButton("Resume Game", fuck));
-    ret.append(document.createElement('br'));
-    ret.append(getStartMenuButton("New Game", fuck));
-    ret.append(document.createElement('br'));
-    ret.append(getStartMenuButton('Settings', fuck));
+    startMenuDivs.append(getStartMenuTitle("Diner Of The Damned"));
+    startMenuDivs.append(getStartMenuButton("Resume Game", 1, fuck));
+    startMenuDivs.append(document.createElement('br'));
+    startMenuDivs.append(getStartMenuButton("New Game", 2, fuck));
+    startMenuDivs.append(document.createElement('br'));
+    startMenuDivs.append(getStartMenuButton('Settings', 3, fuck));
 
-    return ret;
+    return startMenuDivs;
 }
 
-function getStartMenuButton(text, callback) {
+function getStartMenuButton(text, index, callback) {
     var ret = document.createElement('button');
     ret.className = "startMenuButton";
     ret.textContent = text;
     ret.onclick = callback;
+
+    ret.style.animationDelay = `${index/8}s`;
+
     return ret;
 }
 
@@ -41,11 +47,16 @@ function getStartMenuTitle(text) {
 }
 
 function fuck() {
+    gameDiv.removeChild(startMenuDivs);
     ENTITIES["friend"].graphics.goto(0.5,0.5);
     ENTITIES["friend"].graphics.goto(1,1,1000, Ease.inExpo);
 
     ENTITIES["friend"].graphics.makeChange("r", 0);
     ENTITIES["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
     ENTITIES["friend"].graphics.makeChange("scale", 100, 100000);
-    graphicsController.entities = [ENTITIES["friend"], ENTITIES["background"]];
+    graphicsController.entities = [ENTITIES["friend"], ENTITIES["overhead"]];
+}
+
+function makeBackground() {
+    graphicsController.entities = [ENTITIES["interiorScenery"]];
 }

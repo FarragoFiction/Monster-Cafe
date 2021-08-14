@@ -15,7 +15,19 @@
             }
         }
     },
-    "background": {
+    "interiorScenery": {
+        "graphics": {
+            "animations": {
+                "idle": [
+                    {
+                        "src": "interiorScenery",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "overhead": {
         "graphics": {
             "animations": {
                 "idle": [

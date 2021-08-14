@@ -1,22 +1,36 @@
+@keyframes startMenuFadeIn {
+    from {opacity: 0;}
+    to {opacity: 100;}
+}
+
 .startMenuButton {
     z-index: 3;
+    opacity: 0;
+    animation-name: startMenuFadeIn;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
 }
 
 .startMenuTitle {
     z-index: 3;
+    opacity: 0;
+    animation-name: startMenuFadeIn;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
 }
 
 .startMenuHolder {
     z-index: 3;
     position: absolute;
-    left: 20;
-    top: 0;
+    height: 576px;
+    width: 1024px;
 
     text-align: center;
 }
 
 #game {
     position: relative;
+    font-family: Garamond, 'Times New Roman', Times, serif;
 }
 
 

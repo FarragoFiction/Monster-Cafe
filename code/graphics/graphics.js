@@ -10,6 +10,9 @@ WHAT WE NEED HERE:
     -can have different states for different animations
 */
 
+const DEF_WIDTH = 1024;
+const DEF_HEIGHT = 576;
+
 export class GraphicsController {
     constructor(canvas, entities = []) {
         this.canvas = canvas;
@@ -27,8 +30,9 @@ export class GraphicsController {
     drawSprite(img, x, y, scale = 1, r = 0) {
         const tX = x * this.width;
         const tY = y * this.height;
+        const tScale = scale * (this.width / DEF_WIDTH);
 
-        this.ctx.setTransform(scale, 0, 0, scale, tX, tY);
+        this.ctx.setTransform(tScale, 0, 0, tScale, tX, tY);
         this.ctx.rotate(r);
         this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
     }
