@@ -1,9 +1,6 @@
 {
     "friend": {
         "graphics": {
-            "x": 0.5,
-            "y": 0.5,
-            "z": 1,
             "animations": {
                 "idle": [
                     {
@@ -20,9 +17,6 @@
     },
     "background": {
         "graphics": {
-            "x": 0.5,
-            "y": 0.5,
-            "z": 0,
             "animations": {
                 "idle": [
                     {

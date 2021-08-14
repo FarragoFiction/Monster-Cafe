@@ -6,18 +6,6 @@ export class StartMenuController {
     constructor() {
     }
 
-    processInput() {
-        
-    }
-    
-    update() {
-         //if we want fancy background graphics we can put them here i guess?       
-    }
-    
-    render() {
-        
-    }
-
     begin() {
         gameDiv.append(getStartMenuDivs());
     }
@@ -58,5 +46,6 @@ function fuck() {
 
     ENTITIES["friend"].graphics.makeChange("r", 0);
     ENTITIES["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
+    ENTITIES["friend"].graphics.makeChange("scale", 100, 100000);
     graphicsController.entities = [ENTITIES["friend"], ENTITIES["background"]];
 }

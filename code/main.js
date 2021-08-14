@@ -22,7 +22,6 @@ var lag = 0.0
 function init() {    
     graphicsController = new GraphicsController(canvas);
     startMenuController = new StartMenuController();
-    console.log('hello?');
     startMenuController.begin();
     window.requestAnimationFrame(gameLoop);
 }

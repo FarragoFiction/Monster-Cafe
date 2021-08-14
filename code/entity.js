@@ -1,4 +1,4 @@
-import { GraphicsEntity, SpriteAnimation, SpriteFrame } from "./graphics/graphics.js";
+import { GraphicsEntity, SpriteAnimation, SpriteFrame } from "./graphics/graphicsEntity.js";
 
 const ASSET_PATH = "../data/assets.json";
 
@@ -66,7 +66,14 @@ export class Entity {
                 gAnis[ani] = gAni;
             }
     
-            var gEnt = new GraphicsEntity(gAnis, ENTITIES[ent].x, ENTITIES[ent].y, ENTITIES[ent].z);
+            var gEnt = new GraphicsEntity(gAnis);
+
+            for(var value in ENTITIES[ent].graphics) {
+                if(value !== "animations") {
+                    gEnt[value] = ENTITIES[ent].graphics[value];
+                }
+            }
+
             ENTITIES[ent].graphics = gEnt;
         }
         callback();
