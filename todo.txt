@@ -1,5 +1,12 @@
-graphics engine
-cleaner way to load image assets (spritesheets)?
-reading data files for characters/entities to find what assets to associate with them and all that
-successful game state switching
-menu items
+game state switching
+
+scaling sprite size with the game resolution
+settings page
+option for calling slideshow animations that don't loop
+saving client-side data (preferences, progress, etc)
+clean up the stylesheets
+group together multiple graphics Changes into one function for complex animations
+
+revisit dialogueController and make sure its up to speed with the rest of the code
+sound engine? low priority but still probably something that will need to happen.
+pausing

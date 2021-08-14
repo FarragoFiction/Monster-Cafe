@@ -1,4 +1,5 @@
-import { entities, graphicsController, gameDiv} from "./main.js";
+import { graphicsController, gameDiv} from "./main.js";
+import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 
 export class StartMenuController {
@@ -52,10 +53,10 @@ function getStartMenuTitle(text) {
 }
 
 function fuck() {
-    entities["friend"].graphics.goto(0.5,0.5);
-    entities["friend"].graphics.goto(1,1,1000, Ease.inExpo);
+    ENTITIES["friend"].graphics.goto(0.5,0.5);
+    ENTITIES["friend"].graphics.goto(1,1,1000, Ease.inExpo);
 
-    entities["friend"].graphics.makeChange("r", 0);
-    entities["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
-    graphicsController.entities = [entities["friend"], entities["background"]];
+    ENTITIES["friend"].graphics.makeChange("r", 0);
+    ENTITIES["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
+    graphicsController.entities = [ENTITIES["friend"], ENTITIES["background"]];
 }

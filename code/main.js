@@ -1,5 +1,6 @@
-import { GraphicsController, GraphicsEntity, SpriteAnimation, SpriteFrame } from './graphics/graphics.js';
+import { GraphicsController } from './graphics/graphics.js';
 import { StartMenuController } from './startMenuController.js';
+import { Entity } from './entity.js';
 
 const GAME_STATES = {
     MainMenu: 'MainMenu',
@@ -9,7 +10,6 @@ const GAME_STATES = {
 var gameState = GAME_STATES.MainMenu;
 const MS_PER_UPDATE = 16.6666666;
 
-
 export var graphicsController;
 export var startMenuController;
 
@@ -17,29 +17,9 @@ export var canvas = document.getElementById('gameCanvas');
 export var gameDiv = document.getElementById('game');
 
 var lastTime = new Date().getTime();
-var lag = 0.0;
+var lag = 0.0
 
-var sources = {};
-export var entities = {};
-
-function init(images) {
-
-    for (var ent in entities) {
-        var gAnis = {};
-        for (var ani in entities[ent].graphics.animations) {
-            var gFrames = [];
-            for (var frame in entities[ent].graphics.animations[ani]) {
-                var gFrame = new SpriteFrame(images[entities[ent].graphics.animations[ani][frame].src], entities[ent].graphics.animations[ani][frame].t);
-                gFrames.push(gFrame);
-            }
-            var gAni = new SpriteAnimation(gFrames);
-            gAnis[ani] = gAni;
-        }
-
-        var gEnt = new GraphicsEntity(gAnis, entities[ent].x, entities[ent].y, entities[ent].z);
-        entities[ent].graphics = gEnt;
-    }
-    
+function init() {    
     graphicsController = new GraphicsController(canvas);
     startMenuController = new StartMenuController();
     console.log('hello?');
@@ -48,7 +28,6 @@ function init(images) {
 }
 
 function gameLoop() {
-
 
     var current = new Date().getTime();
     var elapsed = current - lastTime;
@@ -79,43 +58,5 @@ function render(time) {
     graphicsController.render();
 }
 
-function loadImages(sources, callback) {
-    const prefix = '../art/';
-    const suffix = '.png';
-    var images = {};
-    var loadedImages = 0;
-    var numImages = 0;
 
-    for (var src in sources) {
-        numImages++;
-    }
-
-    for (var src in sources) {
-        images[src] = new Image();
-        images[src].onload = function () {
-            if (++loadedImages >= numImages) {
-                callback(images);
-            }
-        };
-        images[src].src = prefix + sources[src] + suffix;
-    }
-}
-
-window.onload = function () {
-    const xmlhttp = new XMLHttpRequest();
-    xmlhttp.onload = function () {
-        entities = JSON.parse(this.responseText);
-        for (var ent in entities) {
-            for (var ani in entities[ent].graphics.animations) {
-                for (var frame in entities[ent].graphics.animations[ani]) {
-                    sources[entities[ent].graphics.animations[ani][frame].src] = entities[ent].graphics.animations[ani][frame].src;
-                }
-            }
-        }
-        console.log("uhh????");
-        loadImages(sources, init);
-    }
-    xmlhttp.open("GET", "../data/assets.json");
-    xmlhttp.send();
-
-}
+window.onload = Entity.loadAllEntities(init);
