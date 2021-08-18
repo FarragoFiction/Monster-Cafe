@@ -10,6 +10,8 @@ const GAME_STATES = {
 var gameState = GAME_STATES.MainMenu;
 const MS_PER_UPDATE = 16.6666666;
 
+export var paused = false;
+
 export var graphicsController;
 export var startMenuController;
 
@@ -35,7 +37,9 @@ function gameLoop() {
     processInput();
 
     while (lag >= MS_PER_UPDATE) {
-        update(MS_PER_UPDATE);
+        if(!paused) {
+            update(MS_PER_UPDATE);
+        }
         lag -= MS_PER_UPDATE;
     }
 
@@ -57,5 +61,9 @@ function render(time) {
     graphicsController.render();
 }
 
+export function pause() {
+    if(paused) paused = false;
+    else paused = true;
+}
 
 window.onload = Entity.loadAllEntities(init);

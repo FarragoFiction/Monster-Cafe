@@ -1,4 +1,4 @@
-import { graphicsController, gameDiv} from "./main.js";
+import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 
@@ -55,8 +55,22 @@ function fuck() {
     ENTITIES["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
     ENTITIES["friend"].graphics.makeChange("scale", 100, 100000);
     graphicsController.entities = [ENTITIES["friend"], ENTITIES["overhead"]];
+
+    gameDiv.appendChild(getTestMenuDivs());
 }
 
 function makeBackground() {
     graphicsController.entities = [ENTITIES["interiorScenery"]];
+}
+
+
+var testMenuDivs;
+function getTestMenuDivs() {
+    testMenuDivs = document.createElement('div');
+    testMenuDivs.className = "startMenuHolder";
+
+    testMenuDivs.append(getStartMenuTitle("get tillmaned lol"));
+    testMenuDivs.append(getStartMenuButton("Pause", 1, pause));
+
+    return testMenuDivs;
 }
