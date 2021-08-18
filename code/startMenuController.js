@@ -1,6 +1,7 @@
 import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
+import { DialogueController } from "./dialogueController.js";
 
 export class StartMenuController {
     constructor() {
@@ -19,11 +20,11 @@ function getStartMenuDivs() {
     startMenuDivs.className = "startMenuHolder";
 
     startMenuDivs.append(getStartMenuTitle("Diner Of The Damned"));
-    startMenuDivs.append(getStartMenuButton("Resume Game", 1, fuck));
+    startMenuDivs.append(getStartMenuButton("fly into the corner", 1, fuck));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton("New Game", 2, fuck));
+    startMenuDivs.append(getStartMenuButton("test dialogue", 2, startTestDialogue));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton('Settings', 3, fuck));
+    //startMenuDivs.append(getStartMenuButton('do nothing', 3, fuck));
 
     return startMenuDivs;
 }
@@ -57,6 +58,12 @@ function fuck() {
     graphicsController.entities = [ENTITIES["friend"], ENTITIES["overhead"]];
 
     gameDiv.appendChild(getTestMenuDivs());
+}
+
+function startTestDialogue() {
+    gameDiv.removeChild(startMenuDivs);
+    var talk = new DialogueController();
+    talk.getDialogueLine();
 }
 
 function makeBackground() {

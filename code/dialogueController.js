@@ -1,74 +1,57 @@
+import { graphicsController, gameDiv, pause} from "./main.js";
+import { ENTITIES } from './entity.js';
+
 const DIALOGUE_STATES = {
     Typing: 'Typing',
     Finished: 'Finished',
 }
 
 
-export default class DialogueController {
-    constructor(dialogue) {
+var dialogueDivs;
+
+export class DialogueController {
+    constructor(dialogue = TEST_DIALOGUE, callback = null) {
         this.dialogue = dialogue;
-        this.progress = {
-            phrase: 0,
-            letter: 0,
-            pEnd: dialogue.lines.length(),
-            lEnd: dialogue.lines[0].statement.length()
-        };
-        this.speaker = dialogue.lines[this.progress.phrase].speaker;
-        this.saying = dialogue.lines[this.progress.phrase].statement;
-        this.said = "";
-        this.state = DIALOGUE_STATES.Typing;
+        this.progress = 0;
+        this.callback = callback;
+        //gameDiv.appendChild(dialogueDivs);
     }
 
-    processInput() {
-        switch (this.state) {
-            case DIALOGUE_STATES.Typing:
-                //todo
-                break;
-        
-            case DIALOGUE_STATES.Finished:
-                //todo
-                break;
-        }
-    }
-    
-    update() {
-        switch (this.state) {
-            case DIALOGUE_STATES.Typing:
-                if(this.progress.letter <= this.progress.lEnd) {
-                    this.said = this.saying.substring(0, this.progress.letter);
-                    this.progress.letter++;
-                } else {
-                    this.said = this.saying;
-                    this.state = DIALOGUE_STATES.Finished;
-                }
-                break;
-        
-            case DIALOGUE_STATES.Finished:
-                //should be nothing
-                break;
-        }
-    }
+    getDialogueLine() {
+        const me = this;
 
-    render() {
-        var output = document.createElement('div'); //todo make this pretty
-        switch (this.state) {
-            case DIALOGUE_STATES.Typing:
-                output.textContent = this.speaker + ": " + this.said;
-                break;
-        
-            case DIALOGUE_STATES.Finished:
-                output.textContent = this.speaker + ": " + this.saying + "\n(press Space to continue)";//todo do we wanna use space?
-                //todo make the extra sentence blink
-                break;
-        }
-        return output;
-    }
+        var ret = document.createElement('div');
+        ret.className = "dialogueLine";
+        ret.textContent = this.dialogue.lines[this.progress].statement;
 
-    static TEST_DIALOGUE = new Dialogue([
-        nL('Cactus', 'Neutral', 'Hello world!'),
-        nL('Cactus', 'Neutral', 'This system is a bit clunky at the moment, but I hope it works!'),
-        nL('Cactus', 'Neutral', 'Also: Get Tillmaned Lol')
-    ]);
+        var talkSprite = ENTITIES[this.dialogue.lines[this.progress].speaker];
+        talkSprite.graphics.animState = this.dialogue.lines[this.progress].emotion;
+        talkSprite.graphics.goto(0.20, 0.70);
+
+        graphicsController.entities = [talkSprite];
+        
+        setTimeout( function () {
+            if(me.progress + 1 >= me.dialogue.lines.length) {
+                console.log("aa");
+                gameDiv.onclick = me.callback;
+            } else {
+                console.log("AAAA");
+                gameDiv.onclick = function () {
+                    console.log("boop");
+                    gameDiv.removeChild(dialogueDivs);
+                    me.progress++;
+                    me.getDialogueLine();
+                };
+            }
+        }, 50
+        );
+
+
+        dialogueDivs = document.createElement('div');
+        dialogueDivs.className = "dialogueDivs";
+        dialogueDivs.appendChild(ret);
+        gameDiv.appendChild(dialogueDivs);
+    }
 }
 
 
@@ -89,3 +72,9 @@ class Dialogue {
         this.lines = lines;
     }
 }
+
+const TEST_DIALOGUE = new Dialogue([
+    nL('cactus', 'neutral', 'Hello world!'),
+    nL('cactus', 'neutral', 'This system is a bit clunky at the moment, but I hope it works!'),
+    nL('cactus', 'neutral', 'Also: Get Tillmaned Lol')
+]);

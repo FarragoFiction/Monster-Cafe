@@ -28,6 +28,21 @@
     text-align: center;
 }
 
+.dialogueLine {
+    z-index: 3;
+    position: absolute;
+    text-align: center;
+}
+
+.dialogueDivs {
+    z-index: 3;
+    position: absolute;
+    height: 576px;
+    width: 1024px;
+
+    text-align: center;
+}
+
 #game {
     position: relative;
     font-family: Garamond, 'Times New Roman', Times, serif;

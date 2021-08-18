@@ -38,5 +38,27 @@
                 ]
             }
         }
+    },
+    "cactus": {
+        "graphics": {
+            "animations": {
+                "idle": [
+                    {
+                        "src": "default",
+                        "t": 1000
+                    }
+                ],
+                "neutral": [
+                    {
+                        "src": "cactus1",
+                        "t": 750
+                    },
+                    {
+                        "src": "cactus2",
+                        "t": 750
+                    }
+                ]
+            }
+        }
     }
 }
