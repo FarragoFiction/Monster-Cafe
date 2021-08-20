@@ -1,11 +1,16 @@
 import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
 
-const DIALOGUE_STATES = {
-    Typing: 'Typing',
-    Finished: 'Finished',
-}
 
+const TALKSPRITE_COORDS = {
+    x: 0.20,
+    y: 0.70
+};
+
+const DIALOGUE_COORDS = {
+    x: 0.25,
+    y: 0.70
+};
 
 var dialogueDivs;
 
@@ -22,11 +27,15 @@ export class DialogueController {
 
         var ret = document.createElement('div');
         ret.className = "dialogueLine";
+        const divCoords = graphicsController.convertCoordinates(DIALOGUE_COORDS.x, DIALOGUE_COORDS.y);
+        ret.style.left = "" + divCoords.x + "px";
+        ret.style.top = "" + divCoords.y + "px";
+
         ret.textContent = this.dialogue.lines[this.progress].statement;
 
         var talkSprite = ENTITIES[this.dialogue.lines[this.progress].speaker];
         talkSprite.graphics.animState = this.dialogue.lines[this.progress].emotion;
-        talkSprite.graphics.goto(0.20, 0.70);
+        talkSprite.graphics.goto(TALKSPRITE_COORDS.x, TALKSPRITE_COORDS.y);
 
         graphicsController.entities = [talkSprite];
         
@@ -75,6 +84,6 @@ class Dialogue {
 
 const TEST_DIALOGUE = new Dialogue([
     nL('cactus', 'neutral', 'Hello world!'),
-    nL('cactus', 'neutral', 'This system is a bit clunky at the moment, but I hope it works!'),
-    nL('cactus', 'neutral', 'Also: Get Tillmaned Lol')
+    nL('cactus', 'neutral', 'This system is a bit clunky and barebones at the moment, but I hope it works!'),
+    nL('cactus', 'neutral', 'im going to keep doing my little dance')
 ]);

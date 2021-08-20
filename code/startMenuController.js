@@ -20,11 +20,12 @@ function getStartMenuDivs() {
     startMenuDivs.className = "startMenuHolder";
 
     startMenuDivs.append(getStartMenuTitle("Diner Of The Damned"));
-    startMenuDivs.append(getStartMenuButton("fly into the corner", 1, fuck));
+    startMenuDivs.append(getStartMenuButton("test combat", 1, testCombat));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton("test dialogue", 2, startTestDialogue));
+    startMenuDivs.append(getStartMenuButton("fly into the corner", 2, fuck));
     startMenuDivs.append(document.createElement('br'));
-    //startMenuDivs.append(getStartMenuButton('do nothing', 3, fuck));
+    startMenuDivs.append(getStartMenuButton("test dialogue", 3, startTestDialogue));
+    startMenuDivs.append(document.createElement('br'));
 
     return startMenuDivs;
 }
@@ -80,4 +81,8 @@ function getTestMenuDivs() {
     testMenuDivs.append(getStartMenuButton("Pause", 1, pause));
 
     return testMenuDivs;
+}
+
+function testCombat() {
+    
 }

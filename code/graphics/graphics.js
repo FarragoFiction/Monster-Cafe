@@ -37,6 +37,16 @@ export class GraphicsController {
         this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
     }
 
+    convertCoordinates(x, y) {
+        const tX = x * this.width;
+        const tY = y * this.height;
+
+        return {
+            x: tX,
+            y: tY
+        };
+    }
+
     getSortedEntityList(entities = this.entities) {
         var list = [];
         for(var ent in entities) {

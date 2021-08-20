@@ -33,7 +33,7 @@ export class GraphicsEntity {
         this.animState = "idle";
         
         //a collection of ongoing gradual changes to any NUMERICAL values of this graphicsEntity. 
-        this.changes = {};
+        this.changes = [];
 
         //the current animation frame's image.
         this.img = this.animations[this.animState].frames[0].img;
@@ -54,7 +54,7 @@ export class GraphicsEntity {
 
     //adds a Change to this object. 
     addChange(change) {
-        this.changes[change.type] = change;
+        this.changes.push(change);
     }
 
     //creates two Changes for moving to a different point on the canvas.
@@ -74,14 +74,19 @@ export class GraphicsEntity {
     update(time) {
         this.elapsed += time;
 
-        for(var change in this.changes) {
-            this[change] = this.changes[change].update(time);
+        var newChanges = [];
+        for(var i = 0; i < this.changes.length; i++) {
+            let change = this.changes[i].type;
+            this[change] = this.changes[i].update(time);
             //when the change has gone on long enough, set the value to it's final destination & remove the change.
-            if(this.changes[change].elapsed >= this.changes[change].duration) {
-                this[change] = this.changes[change].finalValue;
-                delete this.changes[change];
+            if(this.changes[i].elapsed >= this.changes[i].duration) {
+                this[change] = this.changes[i].finalValue;
+            }else {
+                newChanges.push(this.changes[i]);
             }
         }
+        delete this.changes;
+        this.changes = newChanges;
 
         this.img = this.animations[this.animState].getFrame(this.elapsed);
     }
