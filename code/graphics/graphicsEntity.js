@@ -4,7 +4,7 @@ import { Ease } from './easing.js';
     All the data about how to draw an entity.
 */
 export class GraphicsEntity {
-    constructor(animations, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1) {
+    constructor(animations, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1, animState = "idle", changes = []) {
         //coordinates of the entity's center relative to the canvas.
         //number between 0 and 1, with 0 being at the origin (top right corner) and 1 being at the opposite side of the canvas.
         //values above/below 0 or 1 may be used if the entity is beyond the screen. 
@@ -30,10 +30,10 @@ export class GraphicsEntity {
         this.animations = animations;
 
         //the name of the current Animation playing.
-        this.animState = "idle";
+        this.animState = animState;
         
         //a collection of ongoing gradual changes to any NUMERICAL values of this graphicsEntity. 
-        this.changes = [];
+        this.changes = changes;
 
         //the current animation frame's image.
         this.img = this.animations[this.animState].frames[0].img;
@@ -90,6 +90,22 @@ export class GraphicsEntity {
 
         this.img = this.animations[this.animState].getFrame(this.elapsed);
     }
+
+    //copying
+    static clone(graphicsEntity) {
+        var animations = {};
+        for(var animation in graphicsEntity.animations) {
+            animations[animation] = SpriteAnimation.clone(graphicsEntity.animations[animation]);
+        }
+        var ret = new GraphicsEntity(animations, graphicsEntity.x, graphicsEntity.y, graphicsEntity.layer, graphicsEntity.r, graphicsEntity.scale, graphicsEntity.animState);
+        
+
+        for(var i = 0; i < graphicsEntity.changes.length; i++) {
+            ret.changes.push(graphicsEntity.changes[i]);
+        }
+        
+        return ret;
+    }
 }
 
 export class Change {
@@ -129,6 +145,11 @@ export class SpriteAnimation {
         }
         return this.frames[i].img;
     } 
+
+    static clone(spriteAnimation) {
+        var ret = new SpriteAnimation(spriteAnimation.frames);
+        return ret;
+    }
 }
 
 export class SpriteFrame {

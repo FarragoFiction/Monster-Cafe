@@ -2,6 +2,7 @@ import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
+import { CombatController } from "./combatController.js";
 
 export class StartMenuController {
     constructor() {
@@ -84,5 +85,7 @@ function getTestMenuDivs() {
 }
 
 function testCombat() {
-    
+    gameDiv.removeChild(startMenuDivs);
+    var combat = CombatController.makeTestScenario();
+    combat.draw();
 }
