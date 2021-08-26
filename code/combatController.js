@@ -19,17 +19,25 @@ export class CombatController {
 
     static makeTestScenario() {
         var chef = new PartyMember(ENTITIES["friend"], 1);
-    
+        
+        var foodMenu = ["fuck"];
+
         var section0 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"])]);
         var section1 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var section2 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var sectionK = new KitchenSection(chef);
-        var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK);
+        var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK, foodMenu);
         return new CombatController(combatScenario);
     }
 
     playerTurn() {
-        
+        const me = this;
+        for(var i = 0; i < this.combatScenario.sections.length; i++) {
+            console.log("hi");
+            this.combatScenario.sections[i].playerCharacter.graphics.onClick = function() {
+                console.log("food menu: " + me.combatScenario.foodMenu);
+            }
+        }
     }
 }
 
@@ -40,12 +48,13 @@ export class CombatController {
 //
 
 class CombatScenario {
-    constructor(rounds, section0, section1, section2, sectionK) {
+    constructor(rounds, section0, section1, section2, sectionK, foodMenu) {
         this.rounds = rounds;
         this.section0 = section0;
         this.section1 = section1;
         this.section2 = section2;
         this.sectionK = sectionK;
+        this.foodMenu = foodMenu;
         this.sections = [
             this.section0,
             this.section1,
@@ -64,15 +73,15 @@ class CombatScenario {
 }
 
 class CombatSection {
-    constructor(server, enemies = {}) {
-        this.server = server;
+    constructor(playerCharacter, enemies = {}) {
+        this.playerCharacter = playerCharacter;
         this.enemies = enemies;
     }
 
     draw(offsetX, entities = []) {
-        entities.push(this.server);
-        this.server.graphics.goto(offsetX, 0.7);
-        console.log(""+ this.server.graphics.x + ", " + this.server.graphics.y);
+        entities.push(this.playerCharacter);
+        this.playerCharacter.graphics.goto(offsetX, 0.7);
+        console.log(""+ this.playerCharacter.graphics.x + ", " + this.playerCharacter.graphics.y);
 
         var yIncrement = 1 / this.enemies.length;
         for(var i = 0; i < this.enemies.length; i++) {
@@ -88,13 +97,13 @@ class CombatSection {
 }
 
 class KitchenSection {
-    constructor(chef) {
-        this.chef = chef;
+    constructor(playerCharacter) {
+        this.playerCharacter = playerCharacter;
     }
 
     draw(offsetX, entities = []) {
-        entities.push(this.chef);
-        this.chef.graphics.goto(offsetX, 0.9);
+        entities.push(this.playerCharacter);
+        this.playerCharacter.graphics.goto(offsetX, 0.9);
 
         return entities;
     }

@@ -41,11 +41,19 @@ export class GraphicsController {
         this.ctx.rotate(r);
         
         var path = new Path2D();
-        path.rect( - (img.width / 2), -(img.height / 2), img.width, img.height);
+        //ok i need to figure out how the hell to get the 4 corners of this thing in regular coordinates.
+        var xAdj = (img.width / 2) * scale;// * Math.cos(r);
+        var yAdj = (img.height / 2) * scale;// * Math.sin(r);
+        path.moveTo(tX - (xAdj * Math.cos(r)) + (yAdj * Math.sin(r)), tY - (xAdj * Math.sin(r)) - (yAdj * Math.cos(r)));
+        path.lineTo(tX - (xAdj * Math.cos(r)) - (yAdj * Math.sin(r)), tY - (xAdj * Math.sin(r)) + (yAdj * Math.cos(r)));
+        path.lineTo(tX + (xAdj * Math.cos(r)) - (yAdj * Math.sin(r)), tY + (xAdj * Math.sin(r)) + (yAdj * Math.cos(r)));
+        path.lineTo(tX + (xAdj * Math.cos(r)) + (yAdj * Math.sin(r)), tY + (xAdj * Math.sin(r)) - (yAdj * Math.cos(r)));
+        path.closePath();
 
         this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
-        
-        this.ctx.fill(path);
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.rotate(0);
+        this.ctx.stroke(path);
 
         return path;
     }
@@ -114,7 +122,7 @@ export class GraphicsController {
     }
 
     render() {
-        this.ctx.fillStyle = 'transparent';
+        //this.ctx.fillStyle = 'transparent';
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.rotate(0);
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -122,14 +130,16 @@ export class GraphicsController {
             var ent = this.queue[i];
             ent.path = this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
         }
+
     }
 
     checkClicks(event) {
         for(var i = this.queue.length - 1; i >= 0; i--) {
             if(this.queue[i].path != null && this.queue[i].onClick != null) {
+                console.log("checking at: (" + this.queue[i].x + "," + this.queue[i].y +")");
                 if(this.ctx.isPointInPath(this.queue[i].path, event.offsetX, event.offsetY)) {
+                    console.log("check passed!");
                     this.queue[i].onClick();
-                    i = -1;
                 }
             }
         }

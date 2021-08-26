@@ -88,4 +88,5 @@ function testCombat() {
     gameDiv.removeChild(startMenuDivs);
     var combat = CombatController.makeTestScenario();
     combat.draw();
+    combat.playerTurn();
 }

@@ -40,9 +40,7 @@ export class GraphicsEntity {
         //used for keeping time.
         this.elapsed = 0;
 
-        this.onClick = function() {
-            console.log(this);
-        };
+        this.onClick = null;
     }
 
     //creates a Change and attaches it to this object.
@@ -107,7 +105,7 @@ export class GraphicsEntity {
         for(var i = 0; i < graphicsEntity.changes.length; i++) {
             ret.changes.push(graphicsEntity.changes[i]);
         }
-        
+
         return ret;
     }
 }
