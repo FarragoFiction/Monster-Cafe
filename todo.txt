@@ -1,4 +1,5 @@
-game state switching
+onclick for canvas entities
+
 
 settings page
 option for calling slideshow animations that don't loop

@@ -27,6 +27,10 @@ export class CombatController {
         var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK);
         return new CombatController(combatScenario);
     }
+
+    playerTurn() {
+        
+    }
 }
 
 //OK SO I NEED TO
@@ -70,9 +74,9 @@ class CombatSection {
         this.server.graphics.goto(offsetX, 0.7);
         console.log(""+ this.server.graphics.x + ", " + this.server.graphics.y);
 
-        var yIncrement = 0.7 / this.enemies.length;
+        var yIncrement = 1 / this.enemies.length;
         for(var i = 0; i < this.enemies.length; i++) {
-            var y = (i + 1) * yIncrement + (yIncrement/2);
+            var y = 0.5 * ((i + 1) * yIncrement);
             var x = offsetX + (0.5 - i % 2) * 1/6;
             this.enemies[i].graphics.goto(x, y);
             console.log(""+ this.enemies[i].graphics.x + ", " + this.enemies[i].graphics.y);
@@ -95,3 +99,4 @@ class KitchenSection {
         return entities;
     }
 }
+

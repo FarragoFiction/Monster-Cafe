@@ -25,9 +25,10 @@
 }
 
 .startMenuHolder {
+    height:0px;
+    overflow:visible;
     z-index: 3;
     position: absolute;
-    height: 576px;
     width: 1024px;
 
     text-align: center;
@@ -44,9 +45,10 @@
 }
 
 .dialogueDivs {
+    height:0px;
+    overflow:visible;
     z-index: 3;
     position: absolute;
-    height: 576px;
     width: 1024px;
 
     text-align: center;

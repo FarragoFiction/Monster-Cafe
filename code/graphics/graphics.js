@@ -23,6 +23,11 @@ export class GraphicsController {
         this.width = canvas.width;
         this.height = canvas.height;
         this.queue = [];
+
+        const me = this;
+        this.canvas.addEventListener('click', function(event) {
+            me.checkClicks(event);
+        });
     }
 
     //draws an image on the canvas,
@@ -34,7 +39,15 @@ export class GraphicsController {
 
         this.ctx.setTransform(tScale, 0, 0, tScale, tX, tY);
         this.ctx.rotate(r);
+        
+        var path = new Path2D();
+        path.rect( - (img.width / 2), -(img.height / 2), img.width, img.height);
+
         this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
+        
+        this.ctx.fill(path);
+
+        return path;
     }
 
     convertCoordinates(x, y) {
@@ -96,15 +109,29 @@ export class GraphicsController {
             var entG = this.queue[i];
             entG.update(time);
         }
+
+
     }
 
     render() {
+        this.ctx.fillStyle = 'transparent';
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.rotate(0);
         this.ctx.clearRect(0, 0, this.width, this.height);
         for(var i = 0; i < this.queue.length; i++) {
             var ent = this.queue[i];
-            this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
+            ent.path = this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
+        }
+    }
+
+    checkClicks(event) {
+        for(var i = this.queue.length - 1; i >= 0; i--) {
+            if(this.queue[i].path != null && this.queue[i].onClick != null) {
+                if(this.ctx.isPointInPath(this.queue[i].path, event.offsetX, event.offsetY)) {
+                    this.queue[i].onClick();
+                    i = -1;
+                }
+            }
         }
     }
 }

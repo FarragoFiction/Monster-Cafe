@@ -39,6 +39,10 @@ export class GraphicsEntity {
         this.img = this.animations[this.animState].frames[0].img;
         //used for keeping time.
         this.elapsed = 0;
+
+        this.onClick = function() {
+            console.log(this);
+        };
     }
 
     //creates a Change and attaches it to this object.
