@@ -33,7 +33,6 @@ export class CombatController {
     playerTurn() {
         const me = this;
         for(var i = 0; i < this.combatScenario.sections.length; i++) {
-            console.log("hi");
             this.combatScenario.sections[i].playerCharacter.graphics.onClick = function() {
                 console.log("food menu: " + me.combatScenario.foodMenu);
             }

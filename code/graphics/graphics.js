@@ -122,7 +122,7 @@ export class GraphicsController {
     }
 
     render() {
-        //this.ctx.fillStyle = 'transparent';
+        this.ctx.strokeStyle = 'transparent';
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.rotate(0);
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -136,9 +136,7 @@ export class GraphicsController {
     checkClicks(event) {
         for(var i = this.queue.length - 1; i >= 0; i--) {
             if(this.queue[i].path != null && this.queue[i].onClick != null) {
-                console.log("checking at: (" + this.queue[i].x + "," + this.queue[i].y +")");
                 if(this.ctx.isPointInPath(this.queue[i].path, event.offsetX, event.offsetY)) {
-                    console.log("check passed!");
                     this.queue[i].onClick();
                 }
             }
