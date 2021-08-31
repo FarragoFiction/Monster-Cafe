@@ -1,7 +1,9 @@
 import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
+import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
 import { PartyMember, CustomerMember } from "./combatParticipants.js";
+import { ACTION_EVENTS, TEST_ACTIONS } from "./combat/action.js";
 
 const COMBAT_BG = "overhead";
 
@@ -18,13 +20,13 @@ export class CombatController {
     }
 
     static makeTestScenario() {
-        var chef = new PartyMember(ENTITIES["friend"], 1);
+        var chef = new PartyMember(ENTITIES["friend"], 4);
         
-        var foodMenu = ["fuck"];
+        var foodMenu = [TEST_ACTIONS.hug, TEST_ACTIONS.juice, TEST_ACTIONS.soup, TEST_ACTIONS.steak];
 
-        var section0 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"])]);
-        var section1 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
-        var section2 = new CombatSection(new PartyMember(ENTITIES["friend"], 0), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
+        var section0 = new CombatSection(new PartyMember(ENTITIES["friend"], 1), [new CustomerMember(ENTITIES["friend"])]);
+        var section1 = new CombatSection(new PartyMember(ENTITIES["friend"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
+        var section2 = new CombatSection(new PartyMember(ENTITIES["friend"], 3), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var sectionK = new KitchenSection(chef);
         var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK, foodMenu);
         return new CombatController(combatScenario);
@@ -33,8 +35,13 @@ export class CombatController {
     playerTurn() {
         const me = this;
         for(var i = 0; i < this.combatScenario.sections.length; i++) {
-            this.combatScenario.sections[i].playerCharacter.graphics.onClick = function() {
-                console.log("food menu: " + me.combatScenario.foodMenu);
+            const pc = this.combatScenario.sections[i].playerCharacter;
+            const sec = this.combatScenario.sections[i];
+            pc.graphics.onClick = function() {
+                graphicsController.camera.gotoEntity(pc.graphics, 500, Ease.outQuad);
+                clearCombatOptionDivs();
+                gameDiv.append(getCombatOptionDiv(me.combatScenario.foodMenu, pc, sec, me.combatScenario));
+                
             }
         }
     }
@@ -69,10 +76,16 @@ class CombatScenario {
         entities = this.sectionK.draw(3/6, entities);
         return entities;
     }
+
+    removeOnClicks() {
+        for(var i = 0; i < this.sections.length; i++) {
+            this.sections[i].removeOnClicks();
+        }
+    }
 }
 
 class CombatSection {
-    constructor(playerCharacter, enemies = {}) {
+    constructor(playerCharacter, enemies = []) {
         this.playerCharacter = playerCharacter;
         this.enemies = enemies;
     }
@@ -93,6 +106,13 @@ class CombatSection {
 
         return entities;
     }
+
+    removeOnClicks() {
+        this.playerCharacter.graphics.onClick = null;
+        for(var i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].graphics.onClick = null;
+        }
+    }
 }
 
 class KitchenSection {
@@ -106,5 +126,75 @@ class KitchenSection {
 
         return entities;
     }
+
+    removeOnClicks() {
+        this.playerCharacter.graphics.onClick = null;
+    }
 }
 
+var combatOptionDiv = null;
+function getCombatOptionDiv(menu, player, section, combatScenario) {
+    combatOptionDiv = document.createElement('div');
+    combatOptionDiv.className = "combatOptionsDiv";
+    combatOptionDiv.id = "combatOptionsDiv";
+    const sec = section;
+    const pc = player;
+    const scen = combatScenario;
+    for(var i = 0; i < menu.length; i++) {
+        const thisOption = menu[i];
+        if(thisOption.type == pc.proficiency || thisOption.type == 0) {
+            var option = document.createElement('button');
+            option.className = "combatOptionButton";
+            option.textContent = menu[i].name;
+            option.onclick = function() {
+                scen.removeOnClicks();
+                var targ = getAllowedTargets(thisOption, sec, scen);
+                buildTargets(thisOption, pc, targ);
+            }
+            combatOptionDiv.append(option);
+        }
+    }
+
+    return combatOptionDiv;
+}
+
+function getAllowedTargets(food, section, combatScenario) {
+    var ret = [];
+    if(food.type != 4) {
+        return section.enemies;
+    } else {
+        for(var i = 0; i < combatScenario.sections.length; i++) {
+            ret.push(combatScenario.sections[i].playerCharacter);
+        }
+    }
+    return ret;
+}
+
+function clearCombatOptionDivs() {
+    var div = document.getElementById("combatOptionsDiv");
+    if(div != null) {
+        gameDiv.removeChild(div);
+    }
+    
+}
+
+function buildTargets(food, playerChar, targets) {
+    var x = 0;
+    var y = 0;
+    const myFood = food;
+    const pc = playerChar;
+    for(var i = 0; i < targets.length; i++) {
+        const targ = targets[i];
+        x += targ.graphics.x;
+        y += targ.graphics.y;
+        targ.graphics.onClick = function() {
+            for(var event in myFood.events) {
+                ACTION_EVENTS[event](pc, targ, myFood.events[event]);
+            }
+        }
+    }
+    x = x / targets.length;
+    y = y / targets.length;
+
+    graphicsController.camera.goto(x, y, 500, Ease.outQuad);
+}

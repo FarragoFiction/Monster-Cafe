@@ -4,7 +4,7 @@ import { Ease } from './easing.js';
     All the data about how to draw an entity.
 */
 export class GraphicsEntity {
-    constructor(animations, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1, animState = "idle", changes = []) {
+    constructor(animations = null, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1, animState = "idle", changes = []) {
         //coordinates of the entity's center relative to the canvas.
         //number between 0 and 1, with 0 being at the origin (top right corner) and 1 being at the opposite side of the canvas.
         //values above/below 0 or 1 may be used if the entity is beyond the screen. 
@@ -36,7 +36,11 @@ export class GraphicsEntity {
         this.changes = changes;
 
         //the current animation frame's image.
-        this.img = this.animations[this.animState].frames[0].img;
+        if(this.animations != null) {
+            this.img = this.animations[this.animState].frames[0].img;
+        } else {
+            this.img = null;
+        }
         //used for keeping time.
         this.elapsed = 0;
 
@@ -71,6 +75,12 @@ export class GraphicsEntity {
             this.addChange(cY);
         }
     }
+
+    //goto the current position of a specific entity.
+    gotoEntity(target, duration = 0, ease = Ease.linear, callback = null) {
+        console.log("going to entity from (" + this.x + ", " + this.y + ") to (" + target.x + ", " + target.y + ")");
+        this.goto(target.x, target.y, duration, ease, callback);
+    }
     
     //this is used by the GraphicsController - you don't gotta touch it.
     update(time) {
@@ -90,7 +100,9 @@ export class GraphicsEntity {
         delete this.changes;
         this.changes = newChanges;
 
-        this.img = this.animations[this.animState].getFrame(this.elapsed);
+        if(this.animations != null) {
+            this.img = this.animations[this.animState].getFrame(this.elapsed);
+        }
     }
 
     //copying

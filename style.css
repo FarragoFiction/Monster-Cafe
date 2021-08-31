@@ -54,6 +54,20 @@
     text-align: center;
 }
 
+.combatOptionsDiv {
+    height:0px;
+    overflow:visible;
+    z-index: 3;
+    position: absolute;
+    width: 1024px;
+
+    text-align: center;
+}
+
+.combatOptionButton {
+    z-index: 3;
+}
+
 #game {
     position: relative;
     font-family: Garamond, 'Times New Roman', Times, serif;

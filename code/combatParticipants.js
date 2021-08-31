@@ -6,10 +6,10 @@ export const JOBS = {
 };
 
 export class PartyMember {
-    constructor(entity, job = JOBS.SERVER) {
+    constructor(entity, proficiency) {
         this.entity = entity;
-        this.stress = 0; //player HP
-        this.job = job;
+        this.health = 0; //player HP
+        this.proficiency = proficiency;
         this.hasActed = false; //tracks if they've performed an action this turn
 
         //lets make a new graphics entity for this
@@ -20,7 +20,7 @@ export class PartyMember {
 export class CustomerMember {
     constructor(entity) {
         this.entity = entity;
-        this.satisfaction = 0; //customer HP
+        this.health = 0; //customer HP
         this.hasActed = false; //tracks if they've performed an action this turn
 
         //lets make a new graphics entity for this

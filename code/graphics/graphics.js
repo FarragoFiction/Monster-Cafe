@@ -10,6 +10,8 @@ WHAT WE NEED HERE:
     -can have different states for different animations
 */
 
+import { GraphicsEntity } from "./graphicsEntity.js";
+
 const DEF_WIDTH = 1024;
 const DEF_HEIGHT = 576;
 
@@ -23,38 +25,49 @@ export class GraphicsController {
         this.width = canvas.width;
         this.height = canvas.height;
         this.queue = [];
+        this.camera = new GraphicsEntity();
 
         const me = this;
         this.canvas.addEventListener('click', function(event) {
             me.checkClicks(event);
         });
+
     }
 
     //draws an image on the canvas,
     //converting relative coordinates to the position on the canvas
     drawSprite(img, x, y, scale = 1, r = 0) {
-        const tX = x * this.width;
-        const tY = y * this.height;
-        const tScale = scale * (this.width / DEF_WIDTH);
+        const max = this.convertCoordinates(1,1);
+        const camCoord = this.convertCoordinates(this.camera.x, this.camera.y);
+        const sCoord = this.convertCoordinates(x, y);
 
-        this.ctx.setTransform(tScale, 0, 0, tScale, tX, tY);
+        const tScale = scale * (this.width / DEF_WIDTH); 
+        const tX = sCoord.x - max.x/2;
+        const tY = sCoord.y - max.y/2;
+
+        this.ctx.setTransform(this.camera.scale, 0, 0, this.camera.scale, max.x - camCoord.x, max.y - camCoord.y);
+        this.ctx.rotate(this.camera.r);
+        this.ctx.transform(tScale, 0, 0, tScale, tX, tY);
         this.ctx.rotate(r);
-        
-        var path = new Path2D();
-        //ok i need to figure out how the hell to get the 4 corners of this thing in regular coordinates.
-        var xAdj = (img.width / 2) * scale;// * Math.cos(r);
-        var yAdj = (img.height / 2) * scale;// * Math.sin(r);
-        path.moveTo(tX - (xAdj * Math.cos(r)) + (yAdj * Math.sin(r)), tY - (xAdj * Math.sin(r)) - (yAdj * Math.cos(r)));
-        path.lineTo(tX - (xAdj * Math.cos(r)) - (yAdj * Math.sin(r)), tY - (xAdj * Math.sin(r)) + (yAdj * Math.cos(r)));
-        path.lineTo(tX + (xAdj * Math.cos(r)) - (yAdj * Math.sin(r)), tY + (xAdj * Math.sin(r)) + (yAdj * Math.cos(r)));
-        path.lineTo(tX + (xAdj * Math.cos(r)) + (yAdj * Math.sin(r)), tY + (xAdj * Math.sin(r)) - (yAdj * Math.cos(r)));
-        path.closePath();
 
         this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.rotate(0);
-        this.ctx.stroke(path);
 
+        var path = new Path2D();
+        //ok i need to figure out how the hell to get the 4 corners of this thing in regular coordinates.
+        var xAdj = img.width / 2 * tScale * this.camera.scale;
+        var yAdj = img.height / 2 * tScale * this.camera.scale;
+
+        var pX = ((Math.cos(this.camera.r) * tX) - (Math.sin(this.camera.r) * tY)) * this.camera.scale;
+        var pY = ((Math.cos(this.camera.r) * tY) + (Math.sin(this.camera.r) * tX)) * this.camera.scale;
+        path.moveTo(max.x - camCoord.x + pX - xAdj, max.y - camCoord.y + pY - yAdj);
+        path.lineTo(max.x - camCoord.x + pX - xAdj, max.y - camCoord.y + pY + yAdj);
+        path.lineTo(max.x - camCoord.x + pX + xAdj, max.y - camCoord.y + pY + yAdj);
+        path.lineTo(max.x - camCoord.x + pX + xAdj, max.y - camCoord.y + pY - yAdj);
+        path.closePath();
+
+        this.ctx.stroke(path);
         return path;
     }
 
@@ -113,6 +126,7 @@ export class GraphicsController {
     //does the update shit for every entity
     update(time) {
         this.queue = this.getSortedEntityList();
+        this.camera.update(time);
         for(var i = 0; i < this.queue.length; i++) {
             var entG = this.queue[i];
             entG.update(time);
@@ -122,7 +136,7 @@ export class GraphicsController {
     }
 
     render() {
-        this.ctx.strokeStyle = 'transparent';
+        //this.ctx.strokeStyle = 'transparent';
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.rotate(0);
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -130,7 +144,6 @@ export class GraphicsController {
             var ent = this.queue[i];
             ent.path = this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
         }
-
     }
 
     checkClicks(event) {

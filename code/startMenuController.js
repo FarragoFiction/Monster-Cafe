@@ -52,12 +52,15 @@ function getStartMenuTitle(text) {
 function fuck() {
     gameDiv.removeChild(startMenuDivs);
     ENTITIES["friend"].graphics.goto(0.5,0.5);
-    ENTITIES["friend"].graphics.goto(1,1,1000, Ease.inExpo);
-
+    ENTITIES["friend"].graphics.goto(0.7,0.7, 1000, Ease.inExpo);
     ENTITIES["friend"].graphics.makeChange("r", 0);
     ENTITIES["friend"].graphics.makeChange("r", 3, 5000, Ease.outSine);
-    ENTITIES["friend"].graphics.makeChange("scale", 100, 100000);
+    ENTITIES["friend"].graphics.makeChange("scale", 2, 100);
     graphicsController.entities = [ENTITIES["friend"], ENTITIES["overhead"]];
+
+    graphicsController.camera.goto(0.5,1, 1000, Ease.inExpo);
+    graphicsController.camera.makeChange("scale", 0.7, 5000, Ease.linear);
+    graphicsController.camera.makeChange("r", -6, 10000, Ease.outBack);
 
     gameDiv.appendChild(getTestMenuDivs());
 }
