@@ -83,6 +83,8 @@ export class GraphicsController {
         path.closePath();
 
         renderData.path = path;
+        renderData.xAdj = xAdj;
+        renderData.yAdj = yAdj;
         return renderData;
     }
 
