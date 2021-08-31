@@ -36,39 +36,54 @@ export class GraphicsController {
 
     //draws an image on the canvas,
     //converting relative coordinates to the position on the canvas
-    drawSprite(img, x, y, scale = 1, r = 0) {
-        const max = this.convertCoordinates(1,1);
-        const camCoord = this.convertCoordinates(this.camera.x, this.camera.y);
-        const sCoord = this.convertCoordinates(x, y);
-
-        const tScale = scale * (this.width / DEF_WIDTH); 
-        const tX = sCoord.x - max.x/2;
-        const tY = sCoord.y - max.y/2;
-
-        this.ctx.setTransform(this.camera.scale, 0, 0, this.camera.scale, max.x - camCoord.x, max.y - camCoord.y);
+    drawSprite(renderData) {
+        this.ctx.setTransform(this.camera.scale, 0, 0, this.camera.scale, renderData.transCoord.x, renderData.transCoord.y);
         this.ctx.rotate(this.camera.r);
-        this.ctx.transform(tScale, 0, 0, tScale, tX, tY);
-        this.ctx.rotate(r);
-
-        this.ctx.drawImage(img, - (img.width / 2), -(img.height / 2));
+        this.ctx.transform(renderData.relScale, 0, 0, renderData.relScale, renderData.worldCoord.x, renderData.worldCoord.y);
+        this.ctx.rotate(renderData.r);
+        this.ctx.drawImage(renderData.img, renderData.rendCoord.x, renderData.rendCoord.y);
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.rotate(0);
+        this.ctx.stroke(renderData.path);
+        return renderData.path;
+    }
+
+    getRenderData(img, x, y, scale, r, camCoord, maxCoord) {
+        var renderData = {
+            img: img,
+            worldCoord: this.convertCoordinates(x - 0.5, y - 0.5), //coordinates this sprite occupies in the world.
+            transCoord: { //coordinates used for the first Transform to the camera's position.
+                x: maxCoord.x - camCoord.x,
+                y: maxCoord.y - camCoord.y,
+            },
+            relScale: scale * (this.width / DEF_WIDTH), //scale adjusted to match the screen size. 
+            rendCoord: { //coordinates used after the last transform to actually draw the image.
+                x: img.width / -2,
+                y: img.height / -2,
+            },
+            r: r,
+        };
 
         var path = new Path2D();
         //ok i need to figure out how the hell to get the 4 corners of this thing in regular coordinates.
-        var xAdj = img.width / 2 * tScale * this.camera.scale;
-        var yAdj = img.height / 2 * tScale * this.camera.scale;
+        var adj = 0.5 * renderData.relScale * this.camera.scale; //adjustment for getting the corners
+        var xAdj = img.width * adj;
+        var yAdj = img.height * adj;
 
-        var pX = ((Math.cos(this.camera.r) * tX) - (Math.sin(this.camera.r) * tY)) * this.camera.scale;
-        var pY = ((Math.cos(this.camera.r) * tY) + (Math.sin(this.camera.r) * tX)) * this.camera.scale;
-        path.moveTo(max.x - camCoord.x + pX - xAdj, max.y - camCoord.y + pY - yAdj);
-        path.lineTo(max.x - camCoord.x + pX - xAdj, max.y - camCoord.y + pY + yAdj);
-        path.lineTo(max.x - camCoord.x + pX + xAdj, max.y - camCoord.y + pY + yAdj);
-        path.lineTo(max.x - camCoord.x + pX + xAdj, max.y - camCoord.y + pY - yAdj);
+        var cos = Math.cos(this.camera.r);
+        var sin = Math.sin(this.camera.r);
+        
+        //coordinates for the center of the path
+        var pX = maxCoord.x - camCoord.x + ((cos * renderData.worldCoord.x) - (sin * renderData.worldCoord.y)) * this.camera.scale;
+        var pY = maxCoord.y - camCoord.y + ((cos * renderData.worldCoord.y) + (sin * renderData.worldCoord.x)) * this.camera.scale;
+        
+        path.moveTo(pX - xAdj, pY - yAdj);
+        path.lineTo(pX - xAdj, pY + yAdj);
+        path.lineTo(pX + xAdj, pY + yAdj);
+        path.lineTo(pX + xAdj, pY - yAdj);
         path.closePath();
 
-        this.ctx.stroke(path);
-        return path;
+        renderData.path = path;
+        return renderData;
     }
 
     convertCoordinates(x, y) {
@@ -127,11 +142,15 @@ export class GraphicsController {
     update(time) {
         this.queue = this.getSortedEntityList();
         this.camera.update(time);
+        const max = this.convertCoordinates(1,1);
+        const camCoord = this.convertCoordinates(this.camera.x, this.camera.y);
+
         for(var i = 0; i < this.queue.length; i++) {
             var entG = this.queue[i];
             entG.update(time);
+            entG.renderData = this.getRenderData(entG.img, entG.x, entG.y, entG.scale, entG.r, camCoord, max);
+            entG.path = entG.renderData.path;
         }
-
 
     }
 
@@ -142,7 +161,7 @@ export class GraphicsController {
         this.ctx.clearRect(0, 0, this.width, this.height);
         for(var i = 0; i < this.queue.length; i++) {
             var ent = this.queue[i];
-            ent.path = this.drawSprite(ent.img, ent.x, ent.y, ent.scale, ent.r);
+            this.drawSprite(ent.renderData);
         }
     }
 
