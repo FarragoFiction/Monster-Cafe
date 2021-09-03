@@ -15,6 +15,12 @@ import { GraphicsEntity } from "./graphicsEntity.js";
 const DEF_WIDTH = 1024;
 const DEF_HEIGHT = 576;
 
+export const DEF_DIMENSIONS = {
+    width: DEF_WIDTH,
+    height: DEF_HEIGHT
+};
+
+
 export class GraphicsController {
     constructor(canvas, entities = []) {
         this.canvas = canvas;
@@ -50,10 +56,10 @@ export class GraphicsController {
     getRenderData(img, x, y, scale, r, camCoord, maxCoord) {
         var renderData = {
             img: img,
-            worldCoord: this.convertCoordinates(x - 0.5, y - 0.5), //coordinates this sprite occupies in the world.
+            worldCoord: this.convertCoordinates(x - DEF_WIDTH/2,y - DEF_HEIGHT/2), //coordinates this sprite occupies in the world.
             transCoord: { //coordinates used for the first Transform to the camera's position.
-                x: maxCoord.x - camCoord.x,
-                y: maxCoord.y - camCoord.y,
+                x: DEF_WIDTH - camCoord.x,
+                y: DEF_HEIGHT - camCoord.y,
             },
             relScale: scale * (this.width / DEF_WIDTH), //scale adjusted to match the screen size. 
             rendCoord: { //coordinates used after the last transform to actually draw the image.
@@ -73,14 +79,16 @@ export class GraphicsController {
         var sin = Math.sin(this.camera.r);
         
         //coordinates for the center of the path
-        var pX = maxCoord.x - camCoord.x + ((cos * renderData.worldCoord.x) - (sin * renderData.worldCoord.y)) * this.camera.scale;
-        var pY = maxCoord.y - camCoord.y + ((cos * renderData.worldCoord.y) + (sin * renderData.worldCoord.x)) * this.camera.scale;
+        var pX = renderData.transCoord.x + ((cos * renderData.worldCoord.x) - (sin * renderData.worldCoord.y)) * this.camera.scale;
+        var pY = renderData.transCoord.y + ((cos * renderData.worldCoord.y) + (sin * renderData.worldCoord.x)) * this.camera.scale;
         
         path.moveTo(pX - xAdj, pY - yAdj);
         path.lineTo(pX - xAdj, pY + yAdj);
         path.lineTo(pX + xAdj, pY + yAdj);
         path.lineTo(pX + xAdj, pY - yAdj);
         path.closePath();
+
+        //console.log("(" + pX + ", " + pY + ")");
 
         renderData.path = path;
         renderData.xAdj = xAdj;
@@ -89,9 +97,10 @@ export class GraphicsController {
     }
 
     convertCoordinates(x, y) {
-        const tX = x * this.width;
-        const tY = y * this.height;
+        const tX = x // * this.width / DEF_WIDTH;
+        const tY = y // * this.height / DEF_HEIGHT;
 
+        //console.log("(" + tX + ", " + tY + ")");
         return {
             x: tX,
             y: tY
@@ -144,13 +153,12 @@ export class GraphicsController {
     update(time) {
         this.queue = this.getSortedEntityList();
         this.camera.update(time);
-        const max = this.convertCoordinates(1,1);
         const camCoord = this.convertCoordinates(this.camera.x, this.camera.y);
 
         for(var i = 0; i < this.queue.length; i++) {
             var entG = this.queue[i];
             entG.update(time);
-            entG.renderData = this.getRenderData(entG.img, entG.x, entG.y, entG.scale, entG.r, camCoord, max);
+            entG.renderData = this.getRenderData(entG.img, entG.x, entG.y, entG.scale, entG.r, camCoord);
             entG.path = entG.renderData.path;
         }
 

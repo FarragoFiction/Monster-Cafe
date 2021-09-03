@@ -1,10 +1,12 @@
 import { Ease } from './easing.js';
+import { DEF_DIMENSIONS } from './graphics.js';
+
 
 /*
     All the data about how to draw an entity.
 */
 export class GraphicsEntity {
-    constructor(animations = null, x = 0.5, y = 0.5, layer = 1, r = 0, scale = 1, animState = "idle", changes = []) {
+    constructor(animations = null, x = DEF_DIMENSIONS.width/2, y = DEF_DIMENSIONS.height/2, layer = 1, r = 0, scale = 1, animState = "idle", changes = []) {
         //coordinates of the entity's center relative to the canvas.
         //number between 0 and 1, with 0 being at the origin (top right corner) and 1 being at the opposite side of the canvas.
         //values above/below 0 or 1 may be used if the entity is beyond the screen. 

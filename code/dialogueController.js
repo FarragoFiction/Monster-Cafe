@@ -1,15 +1,16 @@
 import { graphicsController, gameDiv, pause} from "./main.js";
 import { ENTITIES } from './entity.js';
+import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 
 
 const TALKSPRITE_COORDS = {
-    x: 0.20,
-    y: 0.70
+    x: 0.20 * DEF_DIMENSIONS.width,
+    y: 0.70 * DEF_DIMENSIONS.height
 };
 
 const DIALOGUE_COORDS = {
-    x: 0.25,
-    y: 0.70
+    x: 0.25 * DEF_DIMENSIONS.width,
+    y: 0.70 * DEF_DIMENSIONS.height
 };
 
 var dialogueDivs;

@@ -4,6 +4,7 @@ import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
 import { PartyMember, CustomerMember } from "./combatParticipants.js";
 import { ACTION_EVENTS, TEST_ACTIONS } from "./combat/action.js";
+import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 
 const COMBAT_BG = "overhead";
 
@@ -121,13 +122,13 @@ class CombatSection {
 
     draw(offsetX, entities = []) {
         entities.push(this.playerCharacter);
-        this.playerCharacter.graphics.goto(offsetX, 0.7);
+        this.playerCharacter.graphics.goto(offsetX * DEF_DIMENSIONS.width, 0.7 * DEF_DIMENSIONS.height);
         console.log(""+ this.playerCharacter.graphics.x + ", " + this.playerCharacter.graphics.y);
 
         var yIncrement = 1 / this.enemies.length;
         for(var i = 0; i < this.enemies.length; i++) {
-            var y = 0.5 * ((i + 1) * yIncrement);
-            var x = offsetX + (0.5 - i % 2) * 1/6;
+            var y = 0.5 * ((i + 1) * yIncrement) * DEF_DIMENSIONS.height;
+            var x = (offsetX + (0.5 - i % 2) * 1/6) * DEF_DIMENSIONS.width;
             this.enemies[i].graphics.goto(x, y);
             console.log(""+ this.enemies[i].graphics.x + ", " + this.enemies[i].graphics.y);
             entities.push(this.enemies[i]);
@@ -152,7 +153,7 @@ class KitchenSection {
 
     draw(offsetX, entities = []) {
         entities.push(this.playerCharacter);
-        this.playerCharacter.graphics.goto(offsetX, 0.9);
+        this.playerCharacter.graphics.goto(offsetX * DEF_DIMENSIONS.width, 0.9 * DEF_DIMENSIONS.height);
 
         return entities;
     }
@@ -226,7 +227,7 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
                 scen.removeOnClicks();
                 clearCombatOptionDivs();
                 pc.hasActed = true;
-                graphicsController.camera.goto(0.5, 0.5, 500, Ease.outQuad);
+                graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width , 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
                 cont.playerTurn();
             }
         }
