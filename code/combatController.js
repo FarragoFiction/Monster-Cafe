@@ -57,6 +57,12 @@ export class CombatController {
 
     combatLoop(isPlayersTurn) {
         if(isPlayersTurn) {
+            for(var i = 0; i < this.combatScenario.sections.length; i++) {
+                this.combatScenario.sections[i].playerCharacter.hasActed = false;
+                for(var j = 0; j < this.combatScenario.sections[i].enemies.length; j++) {
+                    this.combatScenario.sections[i].enemies[j].hasActed = false;
+                }
+            }
             this.playerTurn();
         } else {
             this.enemyTurn();
@@ -141,6 +147,7 @@ class CombatSection {
 class KitchenSection {
     constructor(playerCharacter) {
         this.playerCharacter = playerCharacter;
+        this.enemies = [];
     }
 
     draw(offsetX, entities = []) {
