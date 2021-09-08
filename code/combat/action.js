@@ -10,10 +10,12 @@ export const ACTION_EVENTS = {
     attack(instigator, target, damage) {
         target.health -= damage;
         console.log("OK TAKING DAMAGE NOW");
+        return damage;
     },
     
     heal(instigator, target, value) {
         target.health += value;
+        return value;
     }
 };
 

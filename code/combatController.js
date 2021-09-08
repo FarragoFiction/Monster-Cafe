@@ -224,11 +224,25 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
         y += targ.graphics.y;
         targ.graphics.onClick = function() {
             for(var event in myFood.events) {
-                ACTION_EVENTS[event](pc, targ, myFood.events[event]);
+                var ret = ACTION_EVENTS[event](pc, targ, myFood.events[event]);
                 scen.removeOnClicks();
                 clearCombatOptionDivs();
                 pc.hasActed = true;
                 graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width , 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
+                
+                var damageDiv = document.createElement('div');
+                damageDiv.className = "damageDiv";
+                damageDiv.id = "damageDiv";
+                damageDiv.textContent = ret;
+
+                graphicsController.moveElement(damageDiv, targ.graphics.x, targ.graphics.y);
+                gameDiv.appendChild(damageDiv);
+
+                setTimeout(function() {
+                    gameDiv.removeChild(damageDiv);
+                }, 5000);
+    
+
                 cont.playerTurn();
             }
         }

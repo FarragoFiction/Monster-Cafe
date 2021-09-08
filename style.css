@@ -54,6 +54,16 @@
     text-align: center;
 }
 
+.damageDiv {
+    z-index: 3;
+    position: absolute;
+    text-align: center;
+
+    animation-name: dialogueRiseUp;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
 .combatOptionsDiv {
     height:0px;
     overflow:visible;
