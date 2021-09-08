@@ -13,3 +13,12 @@ pausing
 IDEAS FOR SETTINGS:
 delete save data
 volume
+
+
+last minute thoughts about the combat system:
+
+so attack energy cost, right?
+fork/melee attacks cost less the closer the target is to the server
+spoon/ranged attacks cost less the further away the target is to the server
+BUT cost racks up if you target a different section
+characters proficient in the attack they use get a damage boost & might activate additional effects

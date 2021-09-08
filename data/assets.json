@@ -61,5 +61,17 @@
                 ]
             }
         }
+    },
+    "highlighter": {
+        "graphics": {
+            "animations": {
+                "idle": [
+                    {
+                        "src": "target1",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
     }
 }

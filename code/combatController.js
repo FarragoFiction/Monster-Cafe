@@ -5,6 +5,7 @@ import { DialogueController } from "./dialogueController.js";
 import { PartyMember, CustomerMember } from "./combatParticipants.js";
 import { ACTION_EVENTS, TEST_ACTIONS } from "./combat/action.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
+import { GraphicsEntity } from "./graphics/graphicsEntity.js";
 
 const COMBAT_BG = "overhead";
 
@@ -236,4 +237,12 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
     y = y / targets.length;
 
     graphicsController.camera.goto(x, y, 500, Ease.outQuad);
+}
+
+function makeHighlighter(entity) {
+    var high = GraphicsEntity.clone(ENTITIES["highlighter"].graphics);
+    high.gotoEntity(entity);
+    high.layer = entity.layer + 1;
+    
+    return high;
 }

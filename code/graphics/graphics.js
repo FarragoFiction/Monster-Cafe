@@ -56,7 +56,10 @@ export class GraphicsController {
     getRenderData(img, x, y, scale, r, camCoord, maxCoord) {
         var renderData = {
             img: img,
-            worldCoord: this.convertCoordinates(x - DEF_WIDTH/2,y - DEF_HEIGHT/2), //coordinates this sprite occupies in the world.
+            worldCoord: {
+                x: x - DEF_WIDTH/2,
+                y: y - DEF_HEIGHT/2
+            }, //coordinates this sprite occupies in the world.
             transCoord: { //coordinates used for the first Transform to the camera's position.
                 x: DEF_WIDTH - camCoord.x,
                 y: DEF_HEIGHT - camCoord.y,
@@ -97,14 +100,18 @@ export class GraphicsController {
     }
 
     convertCoordinates(x, y) {
-        const tX = x // * this.width / DEF_WIDTH;
-        const tY = y // * this.height / DEF_HEIGHT;
-
-        //console.log("(" + tX + ", " + tY + ")");
+        const tX = x * this.width / DEF_WIDTH;
+        const tY = y * this.height / DEF_HEIGHT;
         return {
             x: tX,
             y: tY
         };
+    }
+
+    //moves an HTML element to somewhere on the canvas.
+    moveElement(element, x, y) {
+        element.style.left = "" + x + "px";
+        element.style.top = "" + y + "px";
     }
 
     getSortedEntityList(entities = this.entities) {
@@ -153,7 +160,7 @@ export class GraphicsController {
     update(time) {
         this.queue = this.getSortedEntityList();
         this.camera.update(time);
-        const camCoord = this.convertCoordinates(this.camera.x, this.camera.y);
+        const camCoord = {x: this.camera.x, y: this.camera.y};
 
         for(var i = 0; i < this.queue.length; i++) {
             var entG = this.queue[i];

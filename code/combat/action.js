@@ -18,9 +18,11 @@ export const ACTION_EVENTS = {
 };
 
 export class Action {
-    constructor(name, type, events) {
+    constructor(name, type, events, description, flavor) {
         this.name = name;
         this.type = type;
+        this.description = description;
+        this.flavor = flavor;
         this.events = events;
     }
 };

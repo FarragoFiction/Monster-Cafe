@@ -28,9 +28,7 @@ export class DialogueController {
 
         var ret = document.createElement('div');
         ret.className = "dialogueLine";
-        const divCoords = graphicsController.convertCoordinates(DIALOGUE_COORDS.x, DIALOGUE_COORDS.y);
-        ret.style.left = "" + divCoords.x + "px";
-        ret.style.top = "" + divCoords.y + "px";
+        graphicsController.moveElement(ret, DIALOGUE_COORDS.x, DIALOGUE_COORDS.y);
 
         ret.textContent = this.dialogue.lines[this.progress].statement;
 
