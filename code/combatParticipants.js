@@ -8,7 +8,7 @@ export const JOBS = {
 export class PartyMember {
     constructor(entity, proficiency) {
         this.entity = entity;
-        this.health = 0; //player HP
+        this.health = 100; //player HP
         this.proficiency = proficiency;
         this.hasActed = false; //tracks if they've performed an action this turn
 
@@ -20,7 +20,7 @@ export class PartyMember {
 export class CustomerMember {
     constructor(entity) {
         this.entity = entity;
-        this.health = 0; //customer HP
+        this.health = 100; //customer HP
         this.hasActed = false; //tracks if they've performed an action this turn
 
         //lets make a new graphics entity for this

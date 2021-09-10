@@ -30,8 +30,8 @@ export class Action {
 };
 
 export const TEST_ACTIONS = {
-    soup: new Action("test soup", ACTION_TYPES.SPOON, { attack: 40, }),
-    steak: new Action("test steak", ACTION_TYPES.FORK, { attack: 40, }),
-    juice: new Action("test juice", ACTION_TYPES.CUP, { attack: 40, }),
+    soup: new Action("test soup", ACTION_TYPES.SPOON, { attack: 1000, }),
+    steak: new Action("test steak", ACTION_TYPES.FORK, { attack: 1000, }),
+    juice: new Action("test juice", ACTION_TYPES.CUP, { attack:4000, }),
     hug: new Action("test hug", ACTION_TYPES.KNIFE, { heal: 40, }),
 };

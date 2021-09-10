@@ -1,4 +1,4 @@
-import { graphicsController, gameDiv, pause} from "./main.js";
+import { graphicsController, gameDiv, pause } from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
@@ -24,7 +24,7 @@ export class CombatController {
 
     static makeTestScenario() {
         var chef = new PartyMember(ENTITIES["friend"], 4);
-        
+
         var foodMenu = [TEST_ACTIONS.hug, TEST_ACTIONS.juice, TEST_ACTIONS.soup, TEST_ACTIONS.steak];
 
         var section0 = new CombatSection(new PartyMember(ENTITIES["friend"], 1), [new CustomerMember(ENTITIES["friend"])]);
@@ -38,12 +38,12 @@ export class CombatController {
     playerTurn() {
         const me = this;
         var allDone = true;
-        for(var i = 0; i < this.combatScenario.sections.length; i++) {
+        for (var i = 0; i < this.combatScenario.sections.length; i++) {
             const pc = this.combatScenario.sections[i].playerCharacter;
-            if(pc.hasActed == false) {
+            if (pc.hasActed == false) {
                 allDone = false;
                 const sec = this.combatScenario.sections[i];
-                pc.graphics.onClick = function() {
+                pc.graphics.onClick = function () {
                     graphicsController.camera.gotoEntity(pc.graphics, 500, Ease.outQuad);
                     clearCombatOptionDivs();
                     gameDiv.append(getCombatOptionDiv(me.combatScenario.foodMenu, pc, sec, me.combatScenario, me));
@@ -51,18 +51,19 @@ export class CombatController {
             }
         }
 
-        if(allDone) {
+        if (allDone) {
             console.log("it should be the enemies turn now");
             this.combatLoop(false);
         }
     }
 
     combatLoop(isPlayersTurn) {
-        if(isPlayersTurn) {
-            for(var i = 0; i < this.combatScenario.sections.length; i++) {
+        if (isPlayersTurn) {
+            for (var i = 0; i < this.combatScenario.sections.length; i++) {
                 this.combatScenario.sections[i].playerCharacter.hasActed = false;
-                for(var j = 0; j < this.combatScenario.sections[i].enemies.length; j++) {
-                    this.combatScenario.sections[i].enemies[j].hasActed = false;
+                for (var j = 0; j < this.combatScenario.sections[i].enemies.length; j++) {
+                    if (this.combatScenario.sections[i].enemies[j] != null)
+                        this.combatScenario.sections[i].enemies[j].hasActed = false;
                 }
             }
             this.playerTurn();
@@ -75,6 +76,30 @@ export class CombatController {
         console.log("ENEMIES DONT DO ANYTHING YET");
         this.turnsElapsed++;
         this.combatLoop(true);
+    }
+
+    
+    clearFinishedParticipants() {
+        var redraw = false;
+        for (var i = 0; i < this.combatScenario.sections.length; i++) {
+            var sec = this.combatScenario.sections[i];
+            if (sec.playerCharacter.health <= 0) {
+                //TODO player down
+                redraw = true;
+            }
+            for (var j = 0; j < sec.enemies.length; j++) {
+                var en = sec.enemies[j];
+                if (en != null && en.health <= 0) {
+                    //TODO enemy defeated
+                    sec.enemies[j] = null;
+                    redraw = true;
+                }
+            }
+        }
+
+        if (redraw) {
+            this.draw();
+        }
     }
 }
 
@@ -101,15 +126,15 @@ class CombatScenario {
     }
 
     draw(entities = []) {
-        entities = this.section0.draw(1/6, entities);
-        entities = this.section1.draw(3/6, entities);
-        entities = this.section2.draw(5/6, entities);
-        entities = this.sectionK.draw(3/6, entities);
+        entities = this.section0.draw(1 / 6, entities);
+        entities = this.section1.draw(3 / 6, entities);
+        entities = this.section2.draw(5 / 6, entities);
+        entities = this.sectionK.draw(3 / 6, entities);
         return entities;
     }
 
     removeOnClicks() {
-        for(var i = 0; i < this.sections.length; i++) {
+        for (var i = 0; i < this.sections.length; i++) {
             this.sections[i].removeOnClicks();
         }
     }
@@ -124,15 +149,17 @@ class CombatSection {
     draw(offsetX, entities = []) {
         entities.push(this.playerCharacter);
         this.playerCharacter.graphics.goto(offsetX * DEF_DIMENSIONS.width, 0.7 * DEF_DIMENSIONS.height);
-        console.log(""+ this.playerCharacter.graphics.x + ", " + this.playerCharacter.graphics.y);
+        console.log("" + this.playerCharacter.graphics.x + ", " + this.playerCharacter.graphics.y);
 
-        var yIncrement = 1 / this.enemies.length;
-        for(var i = 0; i < this.enemies.length; i++) {
-            var y = 0.5 * ((i + 1) * yIncrement) * DEF_DIMENSIONS.height;
-            var x = (offsetX + (0.5 - i % 2) * 1/6) * DEF_DIMENSIONS.width;
-            this.enemies[i].graphics.goto(x, y);
-            console.log(""+ this.enemies[i].graphics.x + ", " + this.enemies[i].graphics.y);
-            entities.push(this.enemies[i]);
+        var yIncrement = 1 / this.enemies.length || -1;
+        for (var i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i] != null) {
+                var y = 0.5 * ((i + 1) * yIncrement) * DEF_DIMENSIONS.height;
+                var x = (offsetX + (0.5 - i % 2) * 1 / 6) * DEF_DIMENSIONS.width;
+                this.enemies[i].graphics.goto(x, y);
+                console.log("" + this.enemies[i].graphics.x + ", " + this.enemies[i].graphics.y);
+                entities.push(this.enemies[i]);
+            }
         }
 
         return entities;
@@ -140,8 +167,9 @@ class CombatSection {
 
     removeOnClicks() {
         this.playerCharacter.graphics.onClick = null;
-        for(var i = 0; i < this.enemies.length; i++) {
-            this.enemies[i].graphics.onClick = null;
+        for (var i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i] != null)
+                this.enemies[i].graphics.onClick = null;
         }
     }
 }
@@ -173,13 +201,13 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     const pc = player;
     const scen = combatScenario;
     const cont = combatController;
-    for(var i = 0; i < menu.length; i++) {
+    for (var i = 0; i < menu.length; i++) {
         const thisOption = menu[i];
-        if(thisOption.type == pc.proficiency || thisOption.type == 0) {
+        if (thisOption.type == pc.proficiency || thisOption.type == 0) {
             var option = document.createElement('button');
             option.className = "combatOptionButton";
             option.textContent = menu[i].name;
-            option.onclick = function() {
+            option.onclick = function () {
                 scen.removeOnClicks();
                 var targ = getAllowedTargets(thisOption, sec, scen);
                 buildTargets(thisOption, pc, targ, scen, cont);
@@ -188,15 +216,28 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
         }
     }
 
+    //skip button too!
+    var skip = document.createElement('button');
+    skip.className = "combatOptionButton";
+    skip.textContent = "skip";
+    skip.onclick = function () {
+        //todo skip
+        scen.removeOnClicks();
+        pc.hasActed = true;
+        graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width, 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
+        cont.playerTurn();  
+    } 
+    combatOptionDiv.append(skip);
+
     return combatOptionDiv;
 }
 
 function getAllowedTargets(food, section, combatScenario) {
     var ret = [];
-    if(food.type != 4) {
+    if (food.type != 4) {
         return section.enemies;
     } else {
-        for(var i = 0; i < combatScenario.sections.length; i++) {
+        for (var i = 0; i < combatScenario.sections.length; i++) {
             ret.push(combatScenario.sections[i].playerCharacter);
         }
     }
@@ -205,10 +246,10 @@ function getAllowedTargets(food, section, combatScenario) {
 
 function clearCombatOptionDivs() {
     var div = document.getElementById("combatOptionsDiv");
-    if(div != null) {
+    if (div != null) {
         gameDiv.removeChild(div);
     }
-    
+
 }
 
 function buildTargets(food, playerChar, targets, combatScenario, combatController) {
@@ -218,32 +259,36 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
     const pc = playerChar;
     const scen = combatScenario;
     const cont = combatController;
-    for(var i = 0; i < targets.length; i++) {
+    for (var i = 0; i < targets.length; i++) {
         const targ = targets[i];
-        x += targ.graphics.x;
-        y += targ.graphics.y;
-        targ.graphics.onClick = function() {
-            for(var event in myFood.events) {
-                var ret = ACTION_EVENTS[event](pc, targ, myFood.events[event]);
-                scen.removeOnClicks();
-                clearCombatOptionDivs();
-                pc.hasActed = true;
-                graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width , 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
-                
-                var damageDiv = document.createElement('div');
-                damageDiv.className = "damageDiv";
-                damageDiv.id = "damageDiv";
-                damageDiv.textContent = ret;
+        if (targ != null) {
+            x += targ.graphics.x;
+            y += targ.graphics.y;
+            targ.graphics.onClick = function () {
+                for (var event in myFood.events) {
+                    var ret = ACTION_EVENTS[event](pc, targ, myFood.events[event]);
+                    scen.removeOnClicks();
+                    clearCombatOptionDivs();
+                    pc.hasActed = true;
+                    graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width, 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
 
-                graphicsController.moveElement(damageDiv, targ.graphics.x, targ.graphics.y);
-                gameDiv.appendChild(damageDiv);
+                    var damageDiv = document.createElement('div');
+                    damageDiv.className = "damageDiv";
+                    damageDiv.id = "damageDiv";
+                    damageDiv.textContent = ret;
 
-                setTimeout(function() {
-                    gameDiv.removeChild(damageDiv);
-                }, 5000);
-    
+                    graphicsController.moveElement(damageDiv, targ.graphics.x, targ.graphics.y);
+                    gameDiv.appendChild(damageDiv);
 
-                cont.playerTurn();
+                    setTimeout(function () {
+                        gameDiv.removeChild(damageDiv);
+                    }, 5000);
+
+                    cont.clearFinishedParticipants();
+
+
+                    cont.playerTurn();
+                }
             }
         }
     }
@@ -253,10 +298,6 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
     graphicsController.camera.goto(x, y, 500, Ease.outQuad);
 }
 
-function makeHighlighter(entity) {
-    var high = GraphicsEntity.clone(ENTITIES["highlighter"].graphics);
-    high.gotoEntity(entity);
-    high.layer = entity.layer + 1;
-    
-    return high;
+function gameOver() {
+    //TODO implement me 
 }
