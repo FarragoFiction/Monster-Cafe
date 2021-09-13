@@ -16,6 +16,23 @@
             }
         }
     },
+    "goth": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "Goth_Barwitch_1",
+                        "t": 500
+                    },
+                    {
+                        "src": "Goth_Barwitch_2",
+                        "t": 500
+                    }
+                ]
+            }
+        }
+    },
     "interiorScenery": {
         "graphics": {
             "animations": {

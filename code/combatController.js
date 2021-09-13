@@ -3,11 +3,16 @@ import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
 import { PartyMember, CustomerMember } from "./combatParticipants.js";
-import { ACTION_EVENTS, TEST_ACTIONS } from "./combat/action.js";
+import { ACTION_EVENTS, TEST_ACTIONS, makeUIButton, Action, ACTION_TYPES} from "./combat/action.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 import { GraphicsEntity } from "./graphics/graphicsEntity.js";
 
 const COMBAT_BG = "overhead";
+
+const MENU_COORDS = {
+    x: 0.8 * DEF_DIMENSIONS.width,
+    y: 0.1 * DEF_DIMENSIONS.height
+};
 
 export class CombatController {
     constructor(combatScenario) {
@@ -23,13 +28,13 @@ export class CombatController {
     }
 
     static makeTestScenario() {
-        var chef = new PartyMember(ENTITIES["friend"], 4);
+        var chef = new PartyMember(ENTITIES["goth"], 4);
 
         var foodMenu = [TEST_ACTIONS.hug, TEST_ACTIONS.juice, TEST_ACTIONS.soup, TEST_ACTIONS.steak];
 
-        var section0 = new CombatSection(new PartyMember(ENTITIES["friend"], 1), [new CustomerMember(ENTITIES["friend"])]);
-        var section1 = new CombatSection(new PartyMember(ENTITIES["friend"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
-        var section2 = new CombatSection(new PartyMember(ENTITIES["friend"], 3), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
+        var section0 = new CombatSection(new PartyMember(ENTITIES["goth"], 1), [new CustomerMember(ENTITIES["friend"])]);
+        var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
+        var section2 = new CombatSection(new PartyMember(ENTITIES["goth"], 3), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var sectionK = new KitchenSection(chef);
         var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK, foodMenu);
         return new CombatController(combatScenario);
@@ -197,6 +202,14 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     combatOptionDiv = document.createElement('div');
     combatOptionDiv.className = "combatOptionsDiv";
     combatOptionDiv.id = "combatOptionsDiv";
+    graphicsController.moveElement(combatOptionDiv, MENU_COORDS.x, MENU_COORDS.y);
+    //combatOptionDiv.style.transform = "rotate(45deg)";
+
+    var header = document.createElement('h3');
+    header.textContent = "MENU";
+    combatOptionDiv.append(header);
+    combatOptionDiv.append(document.createElement("br"));
+    
     const sec = section;
     const pc = player;
     const scen = combatScenario;
@@ -204,22 +217,19 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     for (var i = 0; i < menu.length; i++) {
         const thisOption = menu[i];
         if (thisOption.type == pc.proficiency || thisOption.type == 0) {
-            var option = document.createElement('button');
-            option.className = "combatOptionButton";
-            option.textContent = menu[i].name;
+            var option = makeUIButton(thisOption);
             option.onclick = function () {
                 scen.removeOnClicks();
                 var targ = getAllowedTargets(thisOption, sec, scen);
                 buildTargets(thisOption, pc, targ, scen, cont);
             }
             combatOptionDiv.append(option);
+            combatOptionDiv.append(document.createElement("br"));
         }
     }
 
     //skip button too!
-    var skip = document.createElement('button');
-    skip.className = "combatOptionButton";
-    skip.textContent = "skip";
+    var skip = makeUIButton(new Action("skip", ACTION_TYPES.NONE, { }, "do nothing."),)
     skip.onclick = function () {
         //todo skip
         scen.removeOnClicks();

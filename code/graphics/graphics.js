@@ -27,6 +27,7 @@ export class GraphicsController {
         this.entities = entities;
 
         this.ctx = canvas.getContext('2d');
+        this.ctx.imageSmoothingInabled = false;
 
         this.width = canvas.width;
         this.height = canvas.height;
@@ -49,11 +50,15 @@ export class GraphicsController {
         this.ctx.rotate(renderData.r);
         this.ctx.drawImage(renderData.img, renderData.rendCoord.x, renderData.rendCoord.y);
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.stroke(renderData.path);
+        if(renderData.clickable) {
+            //TODO make a better indicator
+            this.ctx.stroke(renderData.path);
+        }
+
         return renderData.path;
     }
 
-    getRenderData(img, x, y, scale, r, camCoord, maxCoord) {
+    getRenderData(img, x, y, scale, r, camCoord, clickable) {
         var renderData = {
             img: img,
             worldCoord: {
@@ -70,6 +75,7 @@ export class GraphicsController {
                 y: img.height / -2,
             },
             r: r,
+            clickable: clickable
         };
 
         var path = new Path2D();
@@ -165,7 +171,9 @@ export class GraphicsController {
         for(var i = 0; i < this.queue.length; i++) {
             var entG = this.queue[i];
             entG.update(time);
-            entG.renderData = this.getRenderData(entG.img, entG.x, entG.y, entG.scale, entG.r, camCoord);
+            var clickable = false;
+            if(entG.onClick != null) clickable = true;
+            entG.renderData = this.getRenderData(entG.img, entG.x, entG.y, entG.scale, entG.r, camCoord, clickable);
             entG.path = entG.renderData.path;
         }
 
