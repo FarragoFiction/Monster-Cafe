@@ -7,6 +7,9 @@ import { ACTION_EVENTS, TEST_ACTIONS, makeUIButton, Action, ACTION_TYPES} from "
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 import { GraphicsEntity } from "./graphics/graphicsEntity.js";
 
+//TODO haha remember when i said i was going to focus on making this not a tangled mess?
+//refactoring this code is on the block.
+
 const COMBAT_BG = "overhead";
 
 const MENU_COORDS = {
@@ -234,6 +237,7 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
         //todo skip
         scen.removeOnClicks();
         pc.hasActed = true;
+        clearCombatOptionDivs();
         graphicsController.camera.goto(0.5 * DEF_DIMENSIONS.width, 0.5 * DEF_DIMENSIONS.height, 500, Ease.outQuad);
         cont.playerTurn();  
     } 
