@@ -57,6 +57,6 @@ export class Action {
 export const TEST_ACTIONS = {
     soup: new Action("test soup", ACTION_TYPES.SPOON, { attack: 1000, }, "a soup that tastes like static."),
     steak: new Action("test steak", ACTION_TYPES.FORK, { attack: 1000, }, "a steak that tastes like static."),
-    juice: new Action("test juice", ACTION_TYPES.CUP, { attack:4000, }, "a juice that tastes like static."),
+    juice: new Action("test juice", ACTION_TYPES.CUP, { attack: 1000, }, "a juice that tastes like static."),
     hug: new Action("test hug", ACTION_TYPES.KNIFE, { heal: 40, }, "a hug that tastes like static."),
 };

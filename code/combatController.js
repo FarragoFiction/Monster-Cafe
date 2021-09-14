@@ -206,7 +206,6 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     combatOptionDiv.className = "combatOptionsDiv";
     combatOptionDiv.id = "combatOptionsDiv";
     graphicsController.moveElement(combatOptionDiv, MENU_COORDS.x, MENU_COORDS.y);
-    //combatOptionDiv.style.transform = "rotate(45deg)";
 
     var header = document.createElement('h3');
     header.textContent = "MENU";
