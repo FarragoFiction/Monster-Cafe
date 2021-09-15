@@ -39,7 +39,9 @@ export class CombatController {
         var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var section2 = new CombatSection(new PartyMember(ENTITIES["goth"], 3), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
         var sectionK = new KitchenSection(chef);
-        var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK, foodMenu);
+
+        var rates = new SpawnRate(0.5, [{enemy: ENTITIES["friend"], value: 1}, {enemy: ENTITIES["goth"], value: 0.5}]);
+        var combatScenario = new CombatScenario(20, section0, section1, section2, sectionK, foodMenu, rates);
         return new CombatController(combatScenario);
     }
 
@@ -82,10 +84,29 @@ export class CombatController {
 
     enemyTurn() {
         console.log("ENEMIES DONT DO ANYTHING YET");
+        
+        if(this.turnsElapsed <= this.combatScenario.rounds) {
+            this.runSpawnCheck();
+        }
         this.turnsElapsed++;
         this.combatLoop(true);
     }
 
+    runSpawnCheck() {
+        for(var i = 0; i < this.combatScenario.sections.length; i++) {
+            var sec = this.combatScenario.sections[i];
+            for(var j = 0; j < sec.enemies.length; j++) {
+                if(sec.enemies[j] == null && this.combatScenario.spawnRates.checkIfSpawning()) {
+                    //spawning a new enemy
+                    console.log("SPAWN");
+                    sec.enemies[j] = this.combatScenario.spawnRates.spawn(); 
+                } else {
+                    console.log("NOSPAWN");
+                }
+            }
+        }
+        this.draw();
+    }
     
     clearFinishedParticipants() {
         var redraw = false;
@@ -118,7 +139,7 @@ export class CombatController {
 //
 
 class CombatScenario {
-    constructor(rounds, section0, section1, section2, sectionK, foodMenu) {
+    constructor(rounds, section0, section1, section2, sectionK, foodMenu, spawnRates) {
         this.rounds = rounds;
         this.section0 = section0;
         this.section1 = section1;
@@ -131,6 +152,7 @@ class CombatScenario {
             this.section2,
             this.sectionK
         ];
+        this.spawnRates = spawnRates;
     }
 
     draw(entities = []) {
@@ -149,9 +171,14 @@ class CombatScenario {
 }
 
 class CombatSection {
-    constructor(playerCharacter, enemies = []) {
+    constructor(playerCharacter, enemies = [], capacity = 3) {
         this.playerCharacter = playerCharacter;
         this.enemies = enemies;
+        this.capacity = capacity;
+
+        while(this.enemies.length < this.capacity) {
+            this.enemies.push(null);
+        }
     }
 
     draw(offsetX, entities = []) {
@@ -159,8 +186,8 @@ class CombatSection {
         this.playerCharacter.graphics.goto(offsetX * DEF_DIMENSIONS.width, 0.7 * DEF_DIMENSIONS.height);
         console.log("" + this.playerCharacter.graphics.x + ", " + this.playerCharacter.graphics.y);
 
-        var yIncrement = 1 / this.enemies.length || -1;
-        for (var i = 0; i < this.enemies.length; i++) {
+        var yIncrement = 1 / this.capacity || -1;
+        for (var i = 0; i < this.capacity; i++) {
             if (this.enemies[i] != null) {
                 var y = 0.5 * ((i + 1) * yIncrement) * DEF_DIMENSIONS.height;
                 var x = (offsetX + (0.5 - i % 2) * 1 / 6) * DEF_DIMENSIONS.width;
@@ -207,7 +234,7 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     combatOptionDiv.id = "combatOptionsDiv";
     graphicsController.moveElement(combatOptionDiv, MENU_COORDS.x, MENU_COORDS.y);
 
-    var header = document.createElement('h3');
+    var header = document.createElement('h2');
     header.textContent = "MENU";
     combatOptionDiv.append(header);
     combatOptionDiv.append(document.createElement("br"));
@@ -313,4 +340,43 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
 
 function gameOver() {
     //TODO implement me 
+}
+
+/*
+    alright, so some stuff i need to add to the combat loop.
+    -sections need to have set capacities of how many enemies can enter them
+    -weighted random enemy spawning from a list
+    -combat ends when all enemies are gone and the turn timer is at 0.
+*/
+
+class SpawnRate {
+    constructor(baseChance = 0.5, rates) {
+        this.baseChance = baseChance;
+        this.rates = rates;
+    }
+
+    checkIfSpawning() {
+        if(Math.random() >= this.baseChance) {
+            return true;
+        }
+        return false;
+    }
+
+    spawn() {
+        var max = 0;
+        var rand = Math.random();
+        for(var i = 0; i < this.rates.length; i++) {
+            max += this.rates[i].value;
+        }
+        rand *= max;
+
+        for(var i = 0; i < this.rates.length; i++) {
+            if(rand <= this.rates[i].value) {
+                console.log("OK FOUND SOMETHING TO SPAWN");
+                return new CustomerMember(this.rates[i].enemy);
+            } else {
+                rand -= this.rates[i].value;
+            }
+        }
+    }
 }

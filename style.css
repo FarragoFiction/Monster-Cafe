@@ -31,8 +31,9 @@
     color: grey;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
     font-family: 'Lobster', cursive;
+    text-align: center;
 }
 
 .startMenuTitle {
@@ -91,7 +92,6 @@ h1, h2, h3, h4, h5, h6 {
     background-color: rgb(248, 234, 207);
     
 
-    text-align: center;
 
     animation-name: menuRiseUp;
     animation-duration: 0.5s;
