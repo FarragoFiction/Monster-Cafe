@@ -1,0 +1,41 @@
+{
+    "soup": {
+        "name": "Test Soup",
+        "type": "spoon",
+        "value": 40,
+        "events": {
+            "attack": null
+        },
+        "description": "A soup that tastes like static."
+    },
+
+    "steak": {
+        "name": "Test Steak",
+        "type": "fork",
+        "value": 40,
+        "events": {
+            "attack": null
+        },
+        "description": "A steak that tastes like static."
+    },
+
+    "juice": {
+        "name": "Test Juice",
+        "type": "cup",
+        "value": 40,
+        "events": {
+            "attack": null
+        },
+        "description": "A juice that tastes like static."
+    },
+
+    "hug": {
+        "name": "Test Hug",
+        "type": "knife",
+        "value": 40,
+        "events": {
+            "heal": null
+        },
+        "description": "A hug that feels like static."
+    }
+}

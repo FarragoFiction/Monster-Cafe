@@ -25,5 +25,14 @@ export class CustomerMember {
 
         //lets make a new graphics entity for this
         this.graphics = GraphicsEntity.clone(entity.graphics);
+
+        //todo implement this in the constructor somehow.
+        this.weaknesses = {
+            0: 1,
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1
+        };
     }
 }

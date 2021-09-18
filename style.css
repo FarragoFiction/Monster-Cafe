@@ -120,3 +120,9 @@ h1, h2 {
     z-index: 0;
     position: absolute;
 }
+
+.gameTimer {
+    z-index: 3;
+    position: absolute;
+    text-align: center;
+}

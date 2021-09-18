@@ -1,3 +1,5 @@
+const ACTION_PATH = "../data/foods.json";
+
 export const ACTION_TYPES = {
     NONE: 0,
     SPOON: 1,
@@ -5,6 +7,8 @@ export const ACTION_TYPES = {
     CUP: 3,
     KNIFE: 4
 };
+
+export var ACTIONS = {};
 
 export function makeUIButton(action) {
     var option = document.createElement('button');
@@ -14,7 +18,7 @@ export function makeUIButton(action) {
     name.textContent = action.name;
 
     var desc = document.createElement('span');
-    desc.textContent = "" + action.stamina + " - ";
+    desc.textContent = "" + action.value + " - ";
     
     var flavor = document.createElement("i");
     flavor.textContent = action.description;
@@ -30,33 +34,42 @@ export function makeUIButton(action) {
 }
 
 export const ACTION_EVENTS = {
-    attack(instigator, target, damage) {
+    attack(instigator, target, value, type) {
+        var damage = Math.random() * value * target.weaknesses[type];
         target.health -= damage;
         console.log("OK TAKING DAMAGE NOW");
         return damage;
     },
     
-    heal(instigator, target, value) {
+    heal(instigator, target, value, type) {
         target.health += value;
         return value;
     }
 };
 
 export class Action {
-    constructor(name, type, events, description) {
+    constructor(name, type, events, description, value) {
         this.name = name;
         this.type = type;
         this.events = events;
         this.description = description;
-        this.stamina = 40;
+        this.value = value;
 
     }
 
-};
+    static parse(callback) {
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onload = function () {
+            ACTIONS = JSON.parse(this.responseText);
+            //console.log(ACTIONS);
+            for (var act in ACTIONS) {
+                ACTIONS[act].type = ACTION_TYPES[(ACTIONS[act].type).toUpperCase()];
+            }
+            callback();
+        }
+        xmlhttp.open("GET", ACTION_PATH);
+        xmlhttp.send();
+        
+    }
 
-export const TEST_ACTIONS = {
-    soup: new Action("test soup", ACTION_TYPES.SPOON, { attack: 1000, }, "a soup that tastes like static."),
-    steak: new Action("test steak", ACTION_TYPES.FORK, { attack: 1000, }, "a steak that tastes like static."),
-    juice: new Action("test juice", ACTION_TYPES.CUP, { attack: 1000, }, "a juice that tastes like static."),
-    hug: new Action("test hug", ACTION_TYPES.KNIFE, { heal: 40, }, "a hug that tastes like static."),
 };

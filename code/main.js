@@ -1,5 +1,6 @@
 import { GraphicsController } from './graphics/graphics.js';
 import { StartMenuController } from './startMenuController.js';
+import { Action } from './combat/action.js';
 import { Entity } from './entity.js';
 
 const GAME_STATES = {
@@ -66,4 +67,6 @@ export function pause() {
     else paused = true;
 }
 
-window.onload = Entity.loadAllEntities(init);
+window.onload = function() {
+    Entity.loadAllEntities( function() {Action.parse(init)});
+};

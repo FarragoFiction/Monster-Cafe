@@ -3,7 +3,7 @@ import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
 import { PartyMember, CustomerMember } from "./combatParticipants.js";
-import { ACTION_EVENTS, TEST_ACTIONS, makeUIButton, Action, ACTION_TYPES} from "./combat/action.js";
+import { ACTION_EVENTS, ACTIONS, makeUIButton, Action, ACTION_TYPES} from "./combat/action.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 import { GraphicsEntity } from "./graphics/graphicsEntity.js";
 
@@ -33,7 +33,7 @@ export class CombatController {
     static makeTestScenario() {
         var chef = new PartyMember(ENTITIES["goth"], 4);
 
-        var foodMenu = [TEST_ACTIONS.hug, TEST_ACTIONS.juice, TEST_ACTIONS.soup, TEST_ACTIONS.steak];
+        var foodMenu = [ACTIONS.hug, ACTIONS.juice, ACTIONS.soup, ACTIONS.steak];
 
         var section0 = new CombatSection(new PartyMember(ENTITIES["goth"], 1), [new CustomerMember(ENTITIES["friend"])]);
         var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
@@ -46,6 +46,13 @@ export class CombatController {
     }
 
     playerTurn() {
+        var gameTimer = null;
+        clearGameTimer();
+        gameTimer = document.createElement('h3');
+        gameTimer.id = "gameTimer";
+        gameTimer.textContent = "" + this.turnsElapsed + " / " + this.combatScenario.rounds;
+        gameDiv.append(gameTimer);
+
         const me = this;
         var allDone = true;
         for (var i = 0; i < this.combatScenario.sections.length; i++) {
@@ -68,6 +75,7 @@ export class CombatController {
     }
 
     combatLoop(isPlayersTurn) {
+
         if (isPlayersTurn) {
             for (var i = 0; i < this.combatScenario.sections.length; i++) {
                 this.combatScenario.sections[i].playerCharacter.hasActed = false;
@@ -258,7 +266,7 @@ function getCombatOptionDiv(menu, player, section, combatScenario, combatControl
     }
 
     //skip button too!
-    var skip = makeUIButton(new Action("skip", ACTION_TYPES.NONE, { }, "do nothing."),)
+    var skip = makeUIButton(new Action("skip", ACTION_TYPES.NONE, { }, "Do nothing.", 0));
     skip.onclick = function () {
         //todo skip
         scen.removeOnClicks();
@@ -292,6 +300,14 @@ function clearCombatOptionDivs() {
 
 }
 
+function clearGameTimer() {
+    var div = document.getElementById("gameTimer");
+    if (div != null) {
+        gameDiv.removeChild(div);
+    }
+
+}
+
 function buildTargets(food, playerChar, targets, combatScenario, combatController) {
     var x = 0;
     var y = 0;
@@ -306,7 +322,13 @@ function buildTargets(food, playerChar, targets, combatScenario, combatControlle
             y += targ.graphics.y;
             targ.graphics.onClick = function () {
                 for (var event in myFood.events) {
-                    var ret = ACTION_EVENTS[event](pc, targ, myFood.events[event]);
+                    var value;
+                    if(myFood.events[event] == null) {
+                        value = myFood.value;
+                    } else {
+                        value = myFood.events[event];
+                    }
+                    var ret = ACTION_EVENTS[event](pc, targ, value, myFood.type);
                     scen.removeOnClicks();
                     clearCombatOptionDivs();
                     pc.hasActed = true;
