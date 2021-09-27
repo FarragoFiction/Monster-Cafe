@@ -5,6 +5,8 @@ export const JOBS = {
     CHEF: 1
 };
 
+
+//TODO use inheritance please
 export class PartyMember {
     constructor(entity, proficiency) {
         this.entity = entity;
@@ -14,6 +16,8 @@ export class PartyMember {
 
         //lets make a new graphics entity for this
         this.graphics = GraphicsEntity.clone(entity.graphics);
+
+        this.section = null;
     }
 }
 
@@ -34,5 +38,7 @@ export class CustomerMember {
             3: 1,
             4: 1
         };
+
+        this.section = null;
     }
 }

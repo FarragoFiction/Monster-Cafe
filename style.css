@@ -121,7 +121,7 @@ h1, h2 {
     position: absolute;
 }
 
-.gameTimer {
+#gameTimer {
     z-index: 3;
     position: absolute;
     text-align: center;

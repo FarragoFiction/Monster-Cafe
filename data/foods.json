@@ -2,7 +2,7 @@
     "soup": {
         "name": "Test Soup",
         "type": "spoon",
-        "value": 40,
+        "value": 50,
         "events": {
             "attack": null
         },
@@ -12,7 +12,7 @@
     "steak": {
         "name": "Test Steak",
         "type": "fork",
-        "value": 40,
+        "value": 50,
         "events": {
             "attack": null
         },
@@ -22,7 +22,7 @@
     "juice": {
         "name": "Test Juice",
         "type": "cup",
-        "value": 40,
+        "value": 50,
         "events": {
             "attack": null
         },
@@ -32,10 +32,20 @@
     "hug": {
         "name": "Test Hug",
         "type": "knife",
-        "value": 40,
+        "value": 50,
         "events": {
             "heal": null
         },
         "description": "A hug that feels like static."
+    },
+
+    "mondae": {
+        "name": "Mondae",
+        "type": "spoon",
+        "value": 25,
+        "events": {
+            "attackSection": null
+        },
+        "description": "Ice cream for the entire section."
     }
 }
