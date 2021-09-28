@@ -2,7 +2,7 @@ import { graphicsController, gameDiv, pause } from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
-import { PartyMember, CustomerMember } from "./combatParticipants.js";
+import { PartyMember, CustomerMember, ENEMIES} from "./combatParticipants.js";
 import { ACTION_EVENTS, ACTIONS, makeUIButton, Action, ACTION_TYPES } from "./combat/action.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 import { GraphicsEntity } from "./graphics/graphicsEntity.js";
@@ -35,12 +35,13 @@ export class CombatController {
 
         var foodMenu = [ACTIONS.hug, ACTIONS.juice, ACTIONS.soup, ACTIONS.steak, ACTIONS.mondae];
 
-        var section0 = new CombatSection(new PartyMember(ENTITIES["goth"], 1), [new CustomerMember(ENTITIES["friend"])]);
-        var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
-        var section2 = new CombatSection(new PartyMember(ENTITIES["goth"], 3), [new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"]), new CustomerMember(ENTITIES["friend"])]);
+        var section0 = new CombatSection(new PartyMember(ENTITIES["goth"], 1), [new CustomerMember(ENEMIES["rock"])]);
+        var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
+        var section2 = new CombatSection(new PartyMember(ENTITIES["goth"], 3), [new CustomerMember(ENEMIES["rock"]), new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
         var sectionK = new KitchenSection(chef);
 
-        var rates = new SpawnRate(0.5, [{ enemy: ENTITIES["friend"], value: 1 }, { enemy: ENTITIES["goth"], value: 0.5 }]);
+        var rates = new SpawnRate(0.5, [{ enemy: ENEMIES["rock"], value: 1 }, { enemy: ENEMIES["paper"], value: 0.5 }, { enemy: ENEMIES["scissors"], value: 0.5 }]);
+        
         var combatScenario = new CombatScenario(5, section0, section1, section2, sectionK, foodMenu, rates);
         return new CombatController(combatScenario);
     }

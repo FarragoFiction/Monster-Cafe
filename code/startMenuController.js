@@ -24,7 +24,7 @@ function getStartMenuDivs() {
     startMenuDivs.append(getStartMenuTitle("Diner Of The Damned"));
     startMenuDivs.append(getStartMenuButton("test combat", 1, testCombat));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton("fly into the corner", 2, fuck));
+    startMenuDivs.append(getStartMenuButton("fly into the corner", 2, testMovement));
     startMenuDivs.append(document.createElement('br'));
     startMenuDivs.append(getStartMenuButton("test dialogue", 3, startTestDialogue));
     startMenuDivs.append(document.createElement('br'));
@@ -50,7 +50,7 @@ function getStartMenuTitle(text) {
     return ret;
 }
 
-function fuck() {
+function testMovement() {
     gameDiv.removeChild(startMenuDivs);
     ENTITIES["friend"].graphics.goto(0.5 * DEF_DIMENSIONS.width,0.5 * DEF_DIMENSIONS.height);
     ENTITIES["friend"].graphics.goto(0.7 * DEF_DIMENSIONS.width,0.7 * DEF_DIMENSIONS.height, 1000, Ease.inExpo);

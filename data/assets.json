@@ -78,5 +78,84 @@
                 ]
             }
         }
+    },
+
+    "rock": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "rock",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "paper": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "paper",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "scissors": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "scissors",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "knifeGuy": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "knifeGuy",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "forkGuy": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "forkGuy",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
+    },
+    "spoonGuy": {
+        "graphics": {
+            "layer": 3,
+            "animations": {
+                "idle": [
+                    {
+                        "src": "spoonGuy",
+                        "t": 1000
+                    }
+                ]
+            }
+        }
     }
 }

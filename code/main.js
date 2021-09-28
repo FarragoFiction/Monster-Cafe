@@ -2,6 +2,7 @@ import { GraphicsController } from './graphics/graphics.js';
 import { StartMenuController } from './startMenuController.js';
 import { Action } from './combat/action.js';
 import { Entity } from './entity.js';
+import { CustomerMember } from './combatParticipants.js';
 
 const GAME_STATES = {
     MainMenu: 'MainMenu',
@@ -68,5 +69,5 @@ export function pause() {
 }
 
 window.onload = function() {
-    Entity.loadAllEntities( function() {Action.parse(init)});
+    Entity.loadAllEntities( function() {Action.parse( function() { CustomerMember.parse(init)})});
 };
