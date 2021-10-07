@@ -2,7 +2,7 @@ import { GraphicsController } from './graphics/graphics.js';
 import { StartMenuController } from './startMenuController.js';
 import { Action } from './combat/action.js';
 import { Entity } from './entity.js';
-import { CustomerMember } from './combatParticipants.js';
+import { CustomerMember, PartyMember } from './combatParticipants.js';
 
 const GAME_STATES = {
     MainMenu: 'MainMenu',
@@ -49,6 +49,8 @@ function gameLoop() {
 
     lastTime = current;
     window.requestAnimationFrame(gameLoop);
+
+    
 }
 
 function processInput() {
@@ -69,5 +71,5 @@ export function pause() {
 }
 
 window.onload = function() {
-    Entity.loadAllEntities( function() {Action.parse( function() { CustomerMember.parse(init)})});
+    Entity.loadAllEntities( function() {Action.parse( function() { CustomerMember.parse(function() { PartyMember.parse(init)})})});
 };

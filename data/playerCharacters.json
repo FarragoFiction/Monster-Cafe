@@ -1,0 +1,26 @@
+{
+    "goth": {
+        "graphics": "goth",
+        "maxHP": 100,
+        "proficiency": 3
+    },
+
+    "forkGuy": {
+        "graphics": "forkGuy",
+        "maxHP": 100,
+        "proficiency": 2
+    },
+
+    "spoonGuy": {
+        "graphics": "spoonGuy",
+        "maxHP": 100,
+        "proficiency": 1
+    },
+
+    "knifeGuy": {
+        "graphics": "knifeGuy",
+        "maxHP": 100,
+        "proficiency": 4
+    }
+
+}

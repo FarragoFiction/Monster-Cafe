@@ -2,7 +2,7 @@ import { graphicsController, gameDiv, pause } from "./main.js";
 import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
-import { PartyMember, CustomerMember, ENEMIES} from "./combatParticipants.js";
+import { PartyMember, CustomerMember, ENEMIES, PARTYMEMBERS} from "./combatParticipants.js";
 import { ACTION_EVENTS, ACTIONS, makeUIButton, Action, ACTION_TYPES } from "./combat/action.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 import { GraphicsEntity } from "./graphics/graphicsEntity.js";
@@ -31,14 +31,12 @@ export class CombatController {
     }
 
     static makeTestScenario() {
-        var chef = new PartyMember(ENTITIES["goth"], 4);
-
         var foodMenu = [ACTIONS.hug, ACTIONS.juice, ACTIONS.soup, ACTIONS.steak, ACTIONS.mondae];
 
-        var section0 = new CombatSection(new PartyMember(ENTITIES["goth"], 1), [new CustomerMember(ENEMIES["rock"])]);
-        var section1 = new CombatSection(new PartyMember(ENTITIES["goth"], 2), [new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
-        var section2 = new CombatSection(new PartyMember(ENTITIES["goth"], 3), [new CustomerMember(ENEMIES["rock"]), new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
-        var sectionK = new KitchenSection(chef);
+        var section0 = new CombatSection(new PartyMember(PARTYMEMBERS["spoonGuy"]), [new CustomerMember(ENEMIES["rock"])]);
+        var section1 = new CombatSection(new PartyMember(PARTYMEMBERS["goth"]), [new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
+        var section2 = new CombatSection(new PartyMember(PARTYMEMBERS["forkGuy"]), [new CustomerMember(ENEMIES["rock"]), new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
+        var sectionK = new KitchenSection(new PartyMember(PARTYMEMBERS["knifeGuy"]));
 
         var rates = new SpawnRate(0.5, [{ enemy: ENEMIES["rock"], value: 1 }, { enemy: ENEMIES["paper"], value: 0.5 }, { enemy: ENEMIES["scissors"], value: 0.5 }]);
         
