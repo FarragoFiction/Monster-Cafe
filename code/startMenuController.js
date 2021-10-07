@@ -3,6 +3,7 @@ import { ENTITIES } from './entity.js';
 import { Ease } from "./graphics/easing.js";
 import { DialogueController } from "./dialogueController.js";
 import { CombatController } from "./combatController.js";
+import { PreparationController } from "./preparationController.js";
 import { DEF_DIMENSIONS } from "./graphics/graphics.js";
 
 export class StartMenuController {
@@ -22,11 +23,13 @@ function getStartMenuDivs() {
     startMenuDivs.className = "startMenuHolder";
 
     startMenuDivs.append(getStartMenuTitle("Diner Of The Damned"));
-    startMenuDivs.append(getStartMenuButton("test combat", 1, testCombat));
+    startMenuDivs.append(getStartMenuButton("new game", 1, newGame));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton("fly into the corner", 2, testMovement));
+    startMenuDivs.append(getStartMenuButton("test combat", 2, testCombat));
     startMenuDivs.append(document.createElement('br'));
-    startMenuDivs.append(getStartMenuButton("test dialogue", 3, startTestDialogue));
+    startMenuDivs.append(getStartMenuButton("fly into the corner", 3, testMovement));
+    startMenuDivs.append(document.createElement('br'));
+    startMenuDivs.append(getStartMenuButton("test dialogue", 4, startTestDialogue));
     startMenuDivs.append(document.createElement('br'));
 
     return startMenuDivs;
@@ -70,6 +73,13 @@ function startTestDialogue() {
     gameDiv.removeChild(startMenuDivs);
     var talk = new DialogueController();
     talk.getDialogueLine();
+}
+
+function newGame() {
+    gameDiv.removeChild(startMenuDivs);
+
+    var prep = new PreparationController();
+    
 }
 
 function makeBackground() {

@@ -1,0 +1,31 @@
+{
+    "example": {
+        "rounds": 5,
+        "section0": {
+            "enemies": ["rock"]
+        },
+        "section1": {
+            "enemies": ["paper", "scissors"]
+        },
+        "section2": {
+            "enemies": ["rock", "paper", "scissors"]
+        },
+        "spawnRates": {
+            "baseChance": 0.5,
+            "rates": [
+                {
+                    "enemy": "rock",
+                    "value": 1
+                },
+                {
+                    "enemy": "paper",
+                    "value": 0.5
+                },
+                {
+                    "enemy": "scissors",
+                    "value": 0.25
+                }
+            ]
+        }
+    }
+}

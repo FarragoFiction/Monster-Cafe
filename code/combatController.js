@@ -12,10 +12,16 @@ import { GraphicsEntity } from "./graphics/graphicsEntity.js";
 
 const COMBAT_BG = "overhead";
 
+const COMBAT_PATH = "./data/combat.json"
+
+const SECTION_CAPACITY = 3;
+
 const MENU_COORDS = {
     x: 0.8 * DEF_DIMENSIONS.width,
     y: 0.1 * DEF_DIMENSIONS.height
 };
+
+export var COMBAT_SCENARIOS = {};
 
 export class CombatController {
     constructor(combatScenario) {
@@ -32,15 +38,24 @@ export class CombatController {
 
     static makeTestScenario() {
         var foodMenu = [ACTIONS.hug, ACTIONS.juice, ACTIONS.soup, ACTIONS.steak, ACTIONS.mondae];
-
+        /*
         var section0 = new CombatSection(new PartyMember(PARTYMEMBERS["spoonGuy"]), [new CustomerMember(ENEMIES["rock"])]);
         var section1 = new CombatSection(new PartyMember(PARTYMEMBERS["goth"]), [new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
         var section2 = new CombatSection(new PartyMember(PARTYMEMBERS["forkGuy"]), [new CustomerMember(ENEMIES["rock"]), new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
         var sectionK = new KitchenSection(new PartyMember(PARTYMEMBERS["knifeGuy"]));
-
+        
         var rates = new SpawnRate(0.5, [{ enemy: ENEMIES["rock"], value: 1 }, { enemy: ENEMIES["paper"], value: 0.5 }, { enemy: ENEMIES["scissors"], value: 0.5 }]);
         
         var combatScenario = new CombatScenario(5, section0, section1, section2, sectionK, foodMenu, rates);
+        return new CombatController(combatScenario);*/
+
+        var combatScenario = COMBAT_SCENARIOS["example"];
+        combatScenario.foodMenu = foodMenu;
+        combatScenario.section0.playerCharacter = new PartyMember(PARTYMEMBERS["spoonGuy"]);
+        combatScenario.section1.playerCharacter = new PartyMember(PARTYMEMBERS["goth"]);
+        combatScenario.section2.playerCharacter = new PartyMember(PARTYMEMBERS["forkGuy"]);
+        combatScenario.sectionK.playerCharacter = new PartyMember(PARTYMEMBERS["knifeGuy"]);
+
         return new CombatController(combatScenario);
     }
 
@@ -155,7 +170,7 @@ export class CombatController {
 //UHHH PLAYER HP?
 //
 
-class CombatScenario {
+export class CombatScenario {
     constructor(rounds, section0, section1, section2, sectionK, foodMenu, spawnRates) {
         this.rounds = rounds;
         this.section0 = section0;
@@ -185,10 +200,47 @@ class CombatScenario {
             this.sections[i].removeOnClicks();
         }
     }
+
+    static parse(callback) {
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onload = function () {
+            COMBAT_SCENARIOS = JSON.parse(this.responseText);
+            for (var i in COMBAT_SCENARIOS) {
+                var scen = COMBAT_SCENARIOS[i];
+                //get the enemies properly
+                scen.section0 = new CombatSection(null, makeEnemiesReal(scen.section0.enemies));
+                scen.section1 = new CombatSection(null, makeEnemiesReal(scen.section1.enemies));
+                scen.section2 = new CombatSection(null, makeEnemiesReal(scen.section2.enemies));
+                scen.sectionK = new KitchenSection(null);
+
+                //make spawn rates
+                for(var j = 0; j < scen.spawnRates.rates.length; j++) {
+                    scen.spawnRates.rates[j].enemy = ENEMIES[scen.spawnRates.rates[j].enemy];
+                }
+                scen.spawnRates = new SpawnRate(scen.spawnRates.baseChance, scen.spawnRates.rates);
+
+                //anddd put it all together
+                COMBAT_SCENARIOS[i] = new CombatScenario(scen.rounds, scen.section0, scen.section1, scen.section2, scen.sectionK, null, scen.spawnRates);
+            }
+            callback();
+        }
+        xmlhttp.open("GET", COMBAT_PATH);
+        xmlhttp.send();
+        
+    }
+}
+
+//take an array of enemy names and return an array of clones of those enemies
+function makeEnemiesReal(arr) {
+    var ret = [];
+    for(var i = 0; i < arr.length; i++) {
+        ret.push(new CustomerMember(ENEMIES[arr[i]]));
+    }
+    return ret;
 }
 
 class CombatSection {
-    constructor(playerCharacter, enemies = [], capacity = 3) {
+    constructor(playerCharacter, enemies = [], capacity = SECTION_CAPACITY) {
         this.playerCharacter = playerCharacter;
         this.enemies = enemies;
         this.capacity = capacity;

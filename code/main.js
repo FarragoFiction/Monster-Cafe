@@ -1,5 +1,6 @@
 import { GraphicsController } from './graphics/graphics.js';
 import { StartMenuController } from './startMenuController.js';
+import { CombatScenario } from './combatController.js';
 import { Action } from './combat/action.js';
 import { Entity } from './entity.js';
 import { CustomerMember, PartyMember } from './combatParticipants.js';
@@ -71,5 +72,13 @@ export function pause() {
 }
 
 window.onload = function() {
-    Entity.loadAllEntities( function() {Action.parse( function() { CustomerMember.parse(function() { PartyMember.parse(init)})})});
+    Entity.loadAllEntities( function() {
+        Action.parse( function() {
+            CustomerMember.parse( function() { 
+                PartyMember.parse( function() {
+                    CombatScenario.parse(init)
+                })
+            })
+        })
+    });
 };
