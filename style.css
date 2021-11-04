@@ -10,9 +10,14 @@
     to {transform: translateY(-5px); opacity: 100;}
 }
 
-@keyframes menuRiseUp {
+@keyframes menuRiseUpRight {
     from {transform: translateY(10px) rotate(0deg); opacity: 0;}
     to {transform: translateY(-10px) rotate(-5deg); opacity: 100;}
+}
+
+@keyframes menuRiseUpLeft {
+    from {transform: translateY(10px) rotate(0deg); opacity: 0;}
+    to {transform: translateY(-10px) rotate(5deg); opacity: 100;}
 }
 
 .startMenuButton {
@@ -93,7 +98,7 @@ h1, h2 {
     
 
 
-    animation-name: menuRiseUp;
+    animation-name: menuRiseUpRight;
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
 }
@@ -108,6 +113,30 @@ h1, h2 {
 
 .combatOptionButton:hover {
     background-color: grey;
+}
+
+.charSelect {
+    overflow:visible;
+    z-index: 3;
+    position: absolute;
+    background-color: rgb(248, 234, 207);
+    
+
+
+    animation-name: menuRiseUpLeft;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.foodSelect {
+    overflow:visible;
+    z-index: 3;
+    position: absolute;
+    background-color: rgb(248, 234, 207);
+    
+    animation-name: menuRiseUpRight;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
 }
 
 #game {

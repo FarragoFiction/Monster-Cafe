@@ -8,6 +8,8 @@ export const ACTION_TYPES = {
     KNIFE: 4
 };
 
+export const ACTION_TYPE_NAMES = ["None", "Spoon", "Fork", "Cup", "Knife"];
+
 export var ACTIONS = {};
 
 // how much of an attack's damage is random.

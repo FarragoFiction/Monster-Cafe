@@ -38,16 +38,6 @@ export class CombatController {
 
     static makeTestScenario() {
         var foodMenu = [ACTIONS.hug, ACTIONS.juice, ACTIONS.soup, ACTIONS.steak, ACTIONS.mondae];
-        /*
-        var section0 = new CombatSection(new PartyMember(PARTYMEMBERS["spoonGuy"]), [new CustomerMember(ENEMIES["rock"])]);
-        var section1 = new CombatSection(new PartyMember(PARTYMEMBERS["goth"]), [new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
-        var section2 = new CombatSection(new PartyMember(PARTYMEMBERS["forkGuy"]), [new CustomerMember(ENEMIES["rock"]), new CustomerMember(ENEMIES["paper"]), new CustomerMember(ENEMIES["scissors"])]);
-        var sectionK = new KitchenSection(new PartyMember(PARTYMEMBERS["knifeGuy"]));
-        
-        var rates = new SpawnRate(0.5, [{ enemy: ENEMIES["rock"], value: 1 }, { enemy: ENEMIES["paper"], value: 0.5 }, { enemy: ENEMIES["scissors"], value: 0.5 }]);
-        
-        var combatScenario = new CombatScenario(5, section0, section1, section2, sectionK, foodMenu, rates);
-        return new CombatController(combatScenario);*/
 
         var combatScenario = COMBAT_SCENARIOS["example"];
         combatScenario.foodMenu = foodMenu;

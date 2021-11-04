@@ -79,6 +79,8 @@ function newGame() {
     gameDiv.removeChild(startMenuDivs);
 
     var prep = new PreparationController();
+
+    prep.build();
     
 }
 

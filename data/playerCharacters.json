@@ -1,23 +1,27 @@
 {
     "goth": {
+        "name": "goth gf",
         "graphics": "goth",
         "maxHP": 100,
         "proficiency": 3
     },
 
     "forkGuy": {
+        "name":  "fork holder",
         "graphics": "forkGuy",
         "maxHP": 100,
         "proficiency": 2
     },
 
     "spoonGuy": {
+        "name": "person with spoon too big",
         "graphics": "spoonGuy",
         "maxHP": 100,
         "proficiency": 1
     },
 
     "knifeGuy": {
+        "name": "big ??? knife xf",
         "graphics": "knifeGuy",
         "maxHP": 100,
         "proficiency": 4
