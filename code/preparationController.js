@@ -14,59 +14,65 @@ const FOOD_COORDS = {
     y: 0.1 * DEF_DIMENSIONS.height
 };
 
+var charSelect;
+var foodSelect;
+var scenarioPreview;
+
 export class PreparationController {
     constructor() {
-        
+        this.daily_party = {
+            length: 0,
+            col: {}
+        };
+        this.daily_menu = {
+            length: 0,
+            col: {},
+        };
     }
 
     build() {
-        buildCharacterSelect();
-        buildFoodSelect();
-        buildScenarioPreview();
+        this.buildCharacterSelect();
+        this.buildFoodSelect();
+        this.buildScenarioPreview();
     }
-}
 
-var charSelect;
-function buildCharacterSelect() {
-    charSelect = document.createElement('div');
-    charSelect.className = "charSelect";
+    buildCharacterSelect() {
+        const me = this.daily_party;
+        
+        charSelect = document.createElement('div');
+        charSelect.className = "charSelect";
+        
+        graphicsController.moveElement(charSelect, CHARSELECT_COORDS.x, CHARSELECT_COORDS.y);
+        for(const character in PARTYMEMBERS) {
+            const button = makeUIButtonCharacter(PARTYMEMBERS[character]);
+            button.onclick = function() {toggle(button, me, character)};
+            charSelect.append(button);
+            charSelect.append(document.createElement('br'));
+        }
+        
+        gameDiv.appendChild(charSelect);
+    }
+
+    buildFoodSelect() {
+        const me = this.daily_menu;
+        foodSelect = document.createElement('div');
+        foodSelect.className = "foodSelect";
+        graphicsController.moveElement(foodSelect, FOOD_COORDS.x, FOOD_COORDS.y);
+        for(const food in ACTIONS) {
+            const button = makeUIButton(ACTIONS[food]);
+            button.onclick = function() {toggle(button, me, food)};
+            foodSelect.append(button);
+            foodSelect.append(document.createElement('br'));
+        }
+        gameDiv.appendChild(foodSelect);
+    }
+
+    buildScenarioPreview() {
+        scenarioPreview = document.createElement('div');
     
-    graphicsController.moveElement(charSelect, CHARSELECT_COORDS.x, CHARSELECT_COORDS.y);
-    for(var character in PARTYMEMBERS) {
-        charSelect.append(makeUIButtonCharacter(PARTYMEMBERS[character]));
-        charSelect.append(document.createElement('br'));
+        gameDiv.appendChild(scenarioPreview);
     }
-    gameDiv.appendChild(charSelect);
 }
-
-var foodSelect;
-function buildFoodSelect() {
-    foodSelect = document.createElement('div');
-    foodSelect.className = "foodSelect";
-    graphicsController.moveElement(foodSelect, FOOD_COORDS.x, FOOD_COORDS.y);
-    for(var food in ACTIONS) {
-        foodSelect.append(makeUIButton(ACTIONS[food]));
-        foodSelect.append(document.createElement('br'));
-    }
-    gameDiv.appendChild(foodSelect);
-}
-
-var scenarioPreview;
-function buildScenarioPreview() {
-    scenarioPreview = document.createElement('div');
-
-    gameDiv.appendChild(scenarioPreview);
-}
-
-
-/*
-this page needs:
--choosing characters
--building menu for the day
--displaying warnings about the menu?
--display info about the upcoming day
--
-*/
 
 export function makeUIButtonCharacter(character) {
     var option = document.createElement('button');
@@ -84,3 +90,26 @@ export function makeUIButtonCharacter(character) {
 
     return option;
 }
+
+function toggle(option, collection, item) {
+    if(collection.col[item] == undefined) {
+        console.log("not present! adding...");
+        collection.col[item] = item;
+        collection.length++;
+        option.classList.add("selectedOptionButton");
+    } else {
+        console.log("present! removing...");
+        delete collection.col[item];
+        collection.length--;
+        option.classList = ["combatOptionButton"];
+    }
+}
+
+/*
+this page needs:
+-choosing characters
+-building menu for the day
+-displaying warnings about the menu?
+-display info about the upcoming day
+-
+*/

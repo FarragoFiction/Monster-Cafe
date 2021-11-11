@@ -107,12 +107,19 @@ h1, h2 {
     z-index: 3;
     text-align: left;
 
+    width: 100%;
+
     border: none;
     background-color: transparent;
 }
 
 .combatOptionButton:hover {
     background-color: grey;
+}
+
+
+.selectedOptionButton {
+    background-color: orchid;
 }
 
 .charSelect {

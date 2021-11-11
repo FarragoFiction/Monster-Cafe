@@ -23,7 +23,7 @@ export var gameDiv = document.getElementById('game');
 
 var lastTime = new Date().getTime();
 var lag = 0.0
-
+9
 function init() {    
     graphicsController = new GraphicsController(canvas);
     startMenuController = new StartMenuController();
